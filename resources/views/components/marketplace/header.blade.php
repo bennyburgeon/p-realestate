@@ -9,8 +9,8 @@
 <header x-data="{ mobileOpen: false }" class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-100">
     <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2 text-lg font-extrabold tracking-tight text-slate-900">
-            <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="h-10 w-auto object-contain">
-            <span>{{ config('app.name') }}</span>
+            <img src="{{ asset('images/logo.png') }}" alt="BHKnow" class="h-10 w-auto object-contain">
+            <span>BHKnow</span>
         </a>
 
         <nav class="hidden items-center gap-1 md:flex">
