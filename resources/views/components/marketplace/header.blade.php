@@ -9,13 +9,8 @@
 <header x-data="{ mobileOpen: false }" class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-100">
     <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2 text-lg font-extrabold tracking-tight text-slate-900">
-            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-600 text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 11.5 12 4l9 7.5" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" />
-                </svg>
-            </span>
-            <span>Nestly</span>
+            <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="h-10 w-auto object-contain">
+            <span>{{ config('app.name') }}</span>
         </a>
 
         <nav class="hidden items-center gap-1 md:flex">
