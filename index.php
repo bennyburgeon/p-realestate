@@ -17,4 +17,7 @@ require __DIR__.'/vendor/autoload.php';
 /** @var Application $app */
 $app = require_once __DIR__.'/bootstrap/app.php';
 
+// Set the public path to the correct directory since index.php is in the root
+$app->usePublicPath(__DIR__.'/public');
+
 $app->handleRequest(Request::capture());
