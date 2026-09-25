@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('property_categories', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('parent_id')->nullable()->constrained('property_categories')->nullOnDelete();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('nature')->index(); // residential | commercial
+            $table->string('icon')->nullable();
+            $table->unsignedSmallInteger('sort_order')->default(0);
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('property_categories');
+    }
+};
