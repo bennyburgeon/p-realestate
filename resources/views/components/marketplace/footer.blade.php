@@ -1,46 +1,24 @@
-<footer class="mt-16 border-t border-slate-100 bg-slate-50">
-    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-2 gap-8 md:grid-cols-5">
-            <div class="col-span-2">
-                <div class="flex items-center gap-2 text-lg font-extrabold text-slate-900">
-                    <img src="{{ asset('images/logo.png') }}" alt="BHKnow" class="h-8 w-auto object-contain">
-                    BHKnow
-                </div>
-                <p class="mt-3 max-w-xs text-sm text-slate-500">
-                    A modern marketplace for buying, renting and finding property &mdash; built around what you actually need.
-                </p>
+<footer class="mt-16 bg-primary-900">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
+            <div class="flex items-center gap-2 font-display text-lg font-bold text-white">
+                <img src="{{ asset('images/logo.png') }}" alt="BHKnow" class="h-8 w-auto object-contain">
+                BHKnow
             </div>
 
-            <div>
-                <h3 class="text-sm font-semibold text-slate-900">Explore</h3>
-                <ul class="mt-3 space-y-2 text-sm text-slate-500">
-                    <li><a href="{{ route('properties.index', ['intent' => 'buy']) }}" class="hover:text-slate-900">Buy a Property</a></li>
-                    <li><a href="{{ route('properties.index', ['intent' => 'rent']) }}" class="hover:text-slate-900">Rent a Property</a></li>
-                    <li><a href="{{ route('requirements.create') }}" class="hover:text-slate-900">Post a Requirement</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h3 class="text-sm font-semibold text-slate-900">Account</h3>
-                <ul class="mt-3 space-y-2 text-sm text-slate-500">
-                    <li><a href="{{ route('dashboard') }}" class="hover:text-slate-900">Dashboard</a></li>
-                    <li><a href="{{ route('favourites.index') }}" class="hover:text-slate-900">Favourites</a></li>
-                    <li><a href="{{ route('register') }}" class="hover:text-slate-900">Create Account</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h3 class="text-sm font-semibold text-slate-900">Company</h3>
-                <ul class="mt-3 space-y-2 text-sm text-slate-500">
-                    <li><a href="{{ route('home') }}#how-it-works" class="hover:text-slate-900">How It Works</a></li>
-                    <li><a href="{{ route('home') }}#faq" class="hover:text-slate-900">FAQ</a></li>
-                </ul>
-            </div>
+            <nav class="flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium text-primary-200/70">
+                <a href="{{ route('properties.index', ['intent' => 'buy']) }}" class="hover:text-white">Buy</a>
+                <a href="{{ route('properties.index', ['intent' => 'rent']) }}" class="hover:text-white">Rent</a>
+                <a href="{{ route('requirements.create') }}" class="hover:text-white">Post Requirement</a>
+                <a href="{{ route('home') }}#how-it-works" class="hover:text-white">How It Works</a>
+                <a href="{{ route('home') }}#faq" class="hover:text-white">FAQ</a>
+                <a href="{{ route('register') }}" class="hover:text-white">Create Account</a>
+            </nav>
         </div>
 
-        <div class="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-6 text-xs text-slate-400 sm:flex-row">
+        <div class="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-primary-300/60 sm:flex-row">
             <p>&copy; {{ now()->year }} BHKnow. All rights reserved.</p>
-            <p>Built for buyers, tenants, owners, agents and developers.</p>
+            <p>Built for buyers, tenants, owners and agents.</p>
         </div>
     </div>
 </footer>

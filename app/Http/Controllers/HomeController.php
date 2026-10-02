@@ -26,7 +26,7 @@ class HomeController extends Controller
                 ->take(6)
                 ->get(),
             'categories' => PropertyCategory::orderBy('sort_order')->get(),
-            'popularCities' => Location::where('type', Location::TYPE_CITY)->where('is_popular', true)->orderBy('name')->get(),
+            'popularCities' => Location::where('type', Location::TYPE_CITY)->where('is_popular', true)->withCount('properties')->orderBy('name')->get(),
         ]);
     }
 }

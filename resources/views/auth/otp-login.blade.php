@@ -1,8 +1,8 @@
 <x-guest-layout>
     <div x-data="{ resendIn: 30 }" x-init="if (resendIn > 0) { const t = setInterval(() => { resendIn--; if (resendIn <= 0) clearInterval(t); }, 1000); }">
         <div class="text-center">
-            <h1 class="text-2xl font-extrabold text-slate-900">Welcome to BHKnow</h1>
-            <p class="mt-1.5 text-sm text-slate-500">Find your perfect property</p>
+            <h1 class="font-display text-2xl font-bold text-primary-900">{{ $phone ? 'Enter your code' : 'Find your place. Start here.' }}</h1>
+            <p class="mt-1.5 text-sm text-neutral-500">{{ $phone ? 'We sent a 4-digit code to your phone.' : 'No password needed — just your mobile number.' }}</p>
         </div>
 
         @if ($phone)
