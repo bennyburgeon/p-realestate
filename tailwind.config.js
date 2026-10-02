@@ -13,35 +13,36 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                display: ['Outfit', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                // BHKnow brand palette — formalizes the emerald/amber/slate
-                // scheme already used ad hoc across the app under a semantic
-                // vocabulary. Values are copied 1:1 from Tailwind's stock
-                // scales, so existing untouched views keep an identical look.
+                // BHKnow brand palette — drawn directly from the logo's deep
+                // navy wordmark and warm gold roofline, not a generic
+                // Tailwind scheme. primary = navy (chrome, type, CTAs on
+                // light surfaces), secondary = gold (accents, highlights).
                 primary: {
-                    50: '#ecfdf5',
-                    100: '#d1fae5',
-                    200: '#a7f3d0',
-                    300: '#6ee7b7',
-                    400: '#34d399',
-                    500: '#10b981',
-                    600: '#059669',
-                    700: '#047857',
-                    800: '#065f46',
-                    900: '#064e3b',
+                    50: '#eef3f8',
+                    100: '#d9e3ee',
+                    200: '#b3c7dd',
+                    300: '#88a6c7',
+                    400: '#5c7fa6',
+                    500: '#3c5c80',
+                    600: '#28415f',
+                    700: '#1b3a5c',
+                    800: '#152d47',
+                    900: '#0f2034',
                 },
                 secondary: {
-                    50: '#fffbeb',
-                    100: '#fef3c7',
-                    200: '#fde68a',
-                    300: '#fcd34d',
-                    400: '#fbbf24',
-                    500: '#f59e0b',
-                    600: '#d97706',
-                    700: '#b45309',
-                    800: '#92400e',
-                    900: '#78350f',
+                    50: '#fdf6e9',
+                    100: '#faebc9',
+                    200: '#f5d68e',
+                    300: '#efc164',
+                    400: '#e8b34e',
+                    500: '#e2a63d',
+                    600: '#c98f2e',
+                    700: '#a67324',
+                    800: '#7d571b',
+                    900: '#543a12',
                 },
                 neutral: {
                     50: '#f8fafc',

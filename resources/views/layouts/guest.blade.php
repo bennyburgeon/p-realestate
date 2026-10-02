@@ -8,18 +8,18 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800|outfit:600,700,800&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-slate-900 antialiased">
-        <div class="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 py-10">
-            <a href="{{ route('home') }}" class="mb-6 flex items-center gap-2 text-xl font-extrabold tracking-tight text-slate-900">
+        <div class="flex min-h-screen flex-col items-center justify-center bg-neutral-50 px-4 py-10">
+            <a href="{{ route('home') }}" class="mb-8 flex items-center gap-2 font-display text-xl font-bold tracking-tight text-primary-800">
                 <img src="{{ asset('images/logo.png') }}" alt="BHKnow" class="h-10 w-auto object-contain">
                 <span>BHKnow</span>
             </a>
 
-            <div class="w-full overflow-hidden rounded-2xl border border-slate-100 bg-white px-6 py-6 shadow-sm sm:max-w-md">
+            <div class="w-full overflow-hidden rounded-3xl border border-neutral-100 bg-white px-6 py-8 shadow-xl shadow-neutral-900/5 sm:max-w-md sm:px-8">
                 {{ $slot }}
             </div>
         </div>
