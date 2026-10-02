@@ -89,13 +89,13 @@ class PostRequirementWizard extends Component
         $this->contact_phone = $user->phone ?? '';
 
         if ($propertyRequirement && $propertyRequirement->exists) {
-            abort_unless(auth()->id() === $propertyRequirement->user_id, 403);
+            $this->authorize('update', $propertyRequirement);
 
             $this->requirementId = $propertyRequirement->id;
             $this->fill($propertyRequirement->only([
                 'title', 'intent', 'property_nature', 'property_category_id', 'city_id',
                 'budget_min', 'budget_max', 'area_min', 'area_max', 'area_unit',
-                'bedrooms', 'bathrooms', 'furnishing_status', 'parking_required',
+                'bedrooms', 'bathrooms', 'furnishing_status',
                 'floor_preference', 'facing_preference', 'property_age', 'possession_requirement',
                 'move_in_date', 'special_requirements', 'additional_notes',
                 'contact_name', 'contact_email', 'contact_phone',

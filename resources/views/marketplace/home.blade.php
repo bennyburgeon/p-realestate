@@ -1,33 +1,54 @@
 <x-layouts.marketplace :title="'Buy, Rent & Find Your Next Property'">
 
     {{-- Hero --}}
-    <section class="relative overflow-hidden bg-slate-900">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.35),transparent_55%)]"></div>
-        <div class="relative mx-auto max-w-7xl px-4 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-20 lg:px-8">
-            <div class="mx-auto max-w-3xl text-center">
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-                    Can't find what you need? Tell us instead.
-                </span>
-                <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-                    Find a place to call home &mdash; or let it find you
-                </h1>
-                <p class="mx-auto mt-4 max-w-xl text-base text-slate-300 sm:text-lg">
-                    Search thousands of properties for sale and rent, or post exactly what you're looking for and let verified owners and agents come to you.
-                </p>
+    <section class="relative overflow-hidden bg-slate-900 pb-16 sm:pb-20">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(16,185,129,0.25),transparent_45%),radial-gradient(circle_at_85%_20%,rgba(245,158,11,0.18),transparent_40%)]"></div>
+        <div class="absolute inset-0 opacity-[0.07] [background-image:radial-gradient(circle,white_1px,transparent_1px)] [background-size:28px_28px]"></div>
 
-                <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                    <a href="{{ route('requirements.create') }}"
-                       class="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-6 py-3.5 text-base font-bold text-white shadow-lg shadow-amber-500/30 transition hover:bg-amber-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
-                        </svg>
-                        Post Your Property Requirement
-                    </a>
-                    <span class="text-sm text-slate-400">It takes less than 2 minutes &middot; free</span>
-                </div>
+        <div class="relative mx-auto max-w-5xl px-4 pb-6 pt-16 text-center sm:px-6 sm:pt-24 lg:px-8">
+            <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary-300">
+                Buy &bull; Rent &bull; Sell &bull; Find
+            </span>
+
+            <h1 class="mx-auto mt-6 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl">
+                Find a place <span class="text-primary-400">you'll love</span> to call home
+            </h1>
+
+            <p class="mx-auto mt-5 max-w-xl text-base text-slate-300 sm:text-lg">
+                Search verified listings across the city, or post what you need and let owners and agents come to you.
+            </p>
+
+            <div class="mt-7 flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
+                <a href="{{ route('requirements.create') }}"
+                   class="inline-flex items-center gap-2 rounded-xl bg-secondary-500 px-6 py-3.5 text-base font-bold text-white shadow-lg shadow-secondary-500/30 transition hover:bg-secondary-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+                    </svg>
+                    Post Your Requirement
+                </a>
+                <span class="text-sm font-medium text-slate-400">or search below &darr;</span>
             </div>
 
-            {{-- Search card --}}
+            <div class="mx-auto mt-10 flex max-w-md items-center justify-center gap-6 text-sm text-slate-400 sm:gap-10">
+                <div>
+                    <p class="text-xl font-extrabold text-white">10K+</p>
+                    <p class="mt-0.5">Listings</p>
+                </div>
+                <div class="h-8 w-px bg-white/10"></div>
+                <div>
+                    <p class="text-xl font-extrabold text-white">50+</p>
+                    <p class="mt-0.5">Cities</p>
+                </div>
+                <div class="h-8 w-px bg-white/10"></div>
+                <div>
+                    <p class="text-xl font-extrabold text-white">4.8<span class="text-primary-400">&#9733;</span></p>
+                    <p class="mt-0.5">User Rated</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Search card --}}
+        <div class="relative mx-auto -mt-2 max-w-5xl px-4 sm:px-6 lg:px-8">
             <x-marketplace.search-bar :categories="$categories" />
         </div>
     </section>
