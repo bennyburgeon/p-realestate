@@ -3,8 +3,8 @@
         <div class="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div class="col-span-2">
                 <div class="flex items-center gap-2 text-lg font-extrabold text-slate-900">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white text-sm">N</span>
-                    Nestly
+                    <img src="{{ asset('images/logo.png') }}" alt="BHKnow" class="h-8 w-auto object-contain">
+                    BHKnow
                 </div>
                 <p class="mt-3 max-w-xs text-sm text-slate-500">
                     A modern marketplace for buying, renting and finding property &mdash; built around what you actually need.
@@ -39,7 +39,7 @@
         </div>
 
         <div class="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-6 text-xs text-slate-400 sm:flex-row">
-            <p>&copy; {{ now()->year }} Nestly. All rights reserved.</p>
+            <p>&copy; {{ now()->year }} BHKnow. All rights reserved.</p>
             <p>Built for buyers, tenants, owners, agents and developers.</p>
         </div>
     </div>

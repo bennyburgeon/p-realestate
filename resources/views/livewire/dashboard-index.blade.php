@@ -12,6 +12,36 @@
             </div>
         </div>
 
+        {{-- Quick links --}}
+        <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            @if ($isLister)
+                <button wire:click="setTab('properties')" type="button" class="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                    <span class="text-2xl">🏢</span>
+                    <span class="text-sm font-semibold text-slate-700">My Properties</span>
+                </button>
+            @else
+                <a href="{{ route('properties.index') }}" class="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                    <span class="text-2xl">🔍</span>
+                    <span class="text-sm font-semibold text-slate-700">Browse Properties</span>
+                </a>
+            @endif
+
+            <button wire:click="setTab('requirements')" type="button" class="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                <span class="text-2xl">🏠</span>
+                <span class="text-sm font-semibold text-slate-700">Requirements</span>
+            </button>
+
+            <button wire:click="setTab('favourites')" type="button" class="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                <span class="text-2xl">❤️</span>
+                <span class="text-sm font-semibold text-slate-700">Favorites</span>
+            </button>
+
+            <a href="{{ route('profile.edit') }}" class="flex flex-col items-center gap-1.5 rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                <span class="text-2xl">👤</span>
+                <span class="text-sm font-semibold text-slate-700">My Profile</span>
+            </a>
+        </div>
+
         {{-- Tabs --}}
         <div class="flex gap-1 overflow-x-auto rounded-xl bg-slate-100 p-1">
             @if ($isLister)

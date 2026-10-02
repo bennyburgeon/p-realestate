@@ -1,5 +1,5 @@
 @php
-    $steps = ['Basics', 'Preferences', 'Contact', 'Preview'];
+    $steps = ['Buy/Rent', 'Type', 'Location', 'Budget', 'Details', 'Contact', 'Review'];
 @endphp
 
 <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
@@ -34,11 +34,11 @@
 
         <div class="mt-8 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:p-8">
 
-            {{-- Step 1: Basics --}}
+            {{-- Step 1: Buy/Rent --}}
             @if ($step === 1)
                 <div class="space-y-5">
                     <div>
-                        <label class="text-sm font-semibold text-slate-700">I want to</label>
+                        <label class="text-sm font-semibold text-slate-700">What are you looking for?</label>
                         <div class="mt-2 grid grid-cols-3 gap-2">
                             @foreach (['buy' => 'Buy', 'rent' => 'Rent', 'lease' => 'Lease'] as $value => $label)
                                 <label class="flex cursor-pointer items-center justify-center rounded-lg border border-slate-200 py-2.5 text-sm font-semibold text-slate-600 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50 has-[:checked]:text-emerald-700">
@@ -47,8 +47,14 @@
                                 </label>
                             @endforeach
                         </div>
+                        <x-input-error :messages="$errors->get('intent')" class="mt-1" />
                     </div>
+                </div>
+            @endif
 
+            {{-- Step 2: Property type --}}
+            @if ($step === 2)
+                <div class="space-y-5">
                     <div>
                         <label class="text-sm font-semibold text-slate-700">Property type</label>
                         <div class="mt-2 grid grid-cols-2 gap-2">
@@ -59,13 +65,7 @@
                                 </label>
                             @endforeach
                         </div>
-                    </div>
-
-                    <div>
-                        <label class="text-sm font-semibold text-slate-700" for="title">Requirement title</label>
-                        <input type="text" id="title" wire:model="title" placeholder="e.g. 2 BHK apartment for rent near Koramangala"
-                               class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                        <x-input-error :messages="$errors->get('title')" class="mt-1" />
+                        <x-input-error :messages="$errors->get('property_nature')" class="mt-1" />
                     </div>
 
                     <div>
@@ -79,40 +79,55 @@
                         <x-input-error :messages="$errors->get('property_category_id')" class="mt-1" />
                     </div>
 
-                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div>
-                            <label class="text-sm font-semibold text-slate-700" for="city_id">City</label>
-                            <select id="city_id" wire:model.live="city_id" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                                <option value="">Select a city</option>
-                                @foreach ($cities as $city)
-                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                @endforeach
-                            </select>
-                            <x-input-error :messages="$errors->get('city_id')" class="mt-1" />
-                        </div>
-                        <div>
-                            <label class="text-sm font-semibold text-slate-700">Preferred areas</label>
-                            <div class="mt-1.5 max-h-32 space-y-1 overflow-y-auto rounded-lg border border-slate-200 p-2">
-                                @forelse ($localities as $locality)
-                                    <label class="flex items-center gap-2 rounded px-1.5 py-1 text-sm text-slate-600 hover:bg-slate-50">
-                                        <input type="checkbox" wire:model="preferred_locality_ids" value="{{ $locality->id }}" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
-                                        {{ $locality->name }}
-                                    </label>
-                                @empty
-                                    <p class="px-1.5 py-1 text-xs text-slate-400">Select a city to see areas</p>
-                                @endforelse
-                            </div>
+                    <div>
+                        <label class="text-sm font-semibold text-slate-700" for="title">Requirement title</label>
+                        <input type="text" id="title" wire:model="title" placeholder="e.g. 2 BHK apartment for rent near Koramangala"
+                               class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
+                        <x-input-error :messages="$errors->get('title')" class="mt-1" />
+                    </div>
+                </div>
+            @endif
+
+            {{-- Step 3: Location --}}
+            @if ($step === 3)
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-sm font-semibold text-slate-700" for="city_id">City</label>
+                        <select id="city_id" wire:model.live="city_id" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
+                            <option value="">Select a city</option>
+                            @foreach ($cities as $city)
+                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('city_id')" class="mt-1" />
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-slate-700">Preferred areas</label>
+                        <div class="mt-1.5 max-h-40 space-y-1 overflow-y-auto rounded-lg border border-slate-200 p-2">
+                            @forelse ($localities as $locality)
+                                <label class="flex items-center gap-2 rounded px-1.5 py-1 text-sm text-slate-600 hover:bg-slate-50">
+                                    <input type="checkbox" wire:model="preferred_locality_ids" value="{{ $locality->id }}" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
+                                    {{ $locality->name }}
+                                </label>
+                            @empty
+                                <p class="px-1.5 py-1 text-xs text-slate-400">Select a city to see areas</p>
+                            @endforelse
                         </div>
                     </div>
+                </div>
+            @endif
 
+            {{-- Step 4: Budget --}}
+            @if ($step === 4)
+                <div class="space-y-5">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="text-sm font-semibold text-slate-700">Budget Min (₹)</label>
+                            <label class="text-sm font-semibold text-slate-700">Minimum Budget (₹)</label>
                             <input type="number" wire:model="budget_min" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
                             <x-input-error :messages="$errors->get('budget_min')" class="mt-1" />
                         </div>
                         <div>
-                            <label class="text-sm font-semibold text-slate-700">Budget Max (₹)</label>
+                            <label class="text-sm font-semibold text-slate-700">Maximum Budget (₹)</label>
                             <input type="number" wire:model="budget_max" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
                             <x-input-error :messages="$errors->get('budget_max')" class="mt-1" />
                         </div>
@@ -133,8 +148,8 @@
                 </div>
             @endif
 
-            {{-- Step 2: Preferences --}}
-            @if ($step === 2)
+            {{-- Step 5: Details --}}
+            @if ($step === 5)
                 <div class="space-y-5">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
@@ -243,8 +258,8 @@
                 </div>
             @endif
 
-            {{-- Step 3: Contact --}}
-            @if ($step === 3)
+            {{-- Step 6: Contact --}}
+            @if ($step === 6)
                 <div class="space-y-5">
                     <div>
                         <label class="text-sm font-semibold text-slate-700">Full name</label>
@@ -280,27 +295,46 @@
                 </div>
             @endif
 
-            {{-- Step 4: Preview --}}
-            @if ($step === 4)
+            {{-- Step 7: Review --}}
+            @if ($step === 7)
                 <div class="space-y-5">
+                    <h3 class="text-center text-lg font-bold text-slate-900">Your Requirement</h3>
+
                     <div class="rounded-xl bg-slate-50 p-4">
                         <div class="flex items-center justify-between">
-                            <h3 class="font-bold text-slate-900">Basics</h3>
+                            <h3 class="font-bold text-slate-900">Looking for</h3>
                             <button type="button" wire:click="goToStep(1)" class="text-xs font-semibold text-emerald-700 hover:underline">Edit</button>
                         </div>
                         <p class="mt-2 text-sm text-slate-600">{{ $title }}</p>
-                        <p class="text-sm text-slate-500">
-                            Want to {{ $intent }} &middot; {{ ucfirst($property_nature) }}
+                        <p class="text-sm text-slate-500">{{ ucfirst($intent) }} &middot; {{ ucfirst($property_nature) }}</p>
+                    </div>
+
+                    <div class="rounded-xl bg-slate-50 p-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900">Location</h3>
+                            <button type="button" wire:click="goToStep(3)" class="text-xs font-semibold text-emerald-700 hover:underline">Edit</button>
+                        </div>
+                        <p class="mt-2 text-sm text-slate-600">{{ $cities->firstWhere('id', $city_id)?->name ?? 'Any city' }}</p>
+                    </div>
+
+                    <div class="rounded-xl bg-slate-50 p-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900">Budget</h3>
+                            <button type="button" wire:click="goToStep(4)" class="text-xs font-semibold text-emerald-700 hover:underline">Edit</button>
+                        </div>
+                        <p class="mt-2 text-sm text-slate-600">
                             @if ($budget_min || $budget_max)
-                                &middot; ₹{{ number_format((float) ($budget_min ?: 0)) }} - ₹{{ number_format((float) ($budget_max ?: 0)) }}
+                                ₹{{ number_format((float) ($budget_min ?: 0)) }} &ndash; ₹{{ number_format((float) ($budget_max ?: 0)) }}
+                            @else
+                                Any budget
                             @endif
                         </p>
                     </div>
 
                     <div class="rounded-xl bg-slate-50 p-4">
                         <div class="flex items-center justify-between">
-                            <h3 class="font-bold text-slate-900">Preferences</h3>
-                            <button type="button" wire:click="goToStep(2)" class="text-xs font-semibold text-emerald-700 hover:underline">Edit</button>
+                            <h3 class="font-bold text-slate-900">Details</h3>
+                            <button type="button" wire:click="goToStep(5)" class="text-xs font-semibold text-emerald-700 hover:underline">Edit</button>
                         </div>
                         <p class="mt-2 text-sm text-slate-600">
                             {{ $bedrooms ? $bedrooms.'+ BHK' : 'Any BHK' }}
@@ -312,7 +346,7 @@
                     <div class="rounded-xl bg-slate-50 p-4">
                         <div class="flex items-center justify-between">
                             <h3 class="font-bold text-slate-900">Contact</h3>
-                            <button type="button" wire:click="goToStep(3)" class="text-xs font-semibold text-emerald-700 hover:underline">Edit</button>
+                            <button type="button" wire:click="goToStep(6)" class="text-xs font-semibold text-emerald-700 hover:underline">Edit</button>
                         </div>
                         <p class="mt-2 text-sm text-slate-600">{{ $contact_name }} &middot; {{ $contact_phone }}</p>
                     </div>

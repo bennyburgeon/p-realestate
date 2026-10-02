@@ -14,7 +14,7 @@ class PostRequirementWizard extends Component
 {
     public int $step = 1;
 
-    public const int TOTAL_STEPS = 4;
+    public const int TOTAL_STEPS = 7;
 
     public ?string $requirementId = null;
 
@@ -138,24 +138,30 @@ class PostRequirementWizard extends Component
     {
         return match ($step) {
             1 => [
-                'title' => ['required', 'string', 'min:10', 'max:150'],
                 'intent' => ['required', 'in:buy,rent,lease'],
+            ],
+            2 => [
                 'property_nature' => ['required', 'in:residential,commercial'],
                 'property_category_id' => ['required', 'exists:property_categories,id'],
+                'title' => ['required', 'string', 'min:10', 'max:150'],
+            ],
+            3 => [
                 'city_id' => ['required', 'exists:locations,id'],
+            ],
+            4 => [
                 'budget_min' => ['nullable', 'numeric', 'min:0'],
                 'budget_max' => ['nullable', 'numeric', 'min:0', 'gte:budget_min'],
                 'area_min' => ['nullable', 'numeric', 'min:0'],
                 'area_max' => ['nullable', 'numeric', 'min:0', 'gte:area_min'],
             ],
-            2 => [
+            5 => [
                 'bedrooms' => ['nullable', 'integer', 'min:0', 'max:20'],
                 'bathrooms' => ['nullable', 'integer', 'min:0', 'max:20'],
                 'move_in_date' => ['nullable', 'date', 'after_or_equal:today'],
                 'special_requirements' => ['nullable', 'string', 'max:1000'],
                 'additional_notes' => ['nullable', 'string', 'max:1000'],
             ],
-            3 => [
+            6 => [
                 'contact_name' => ['required', 'string', 'max:100'],
                 'contact_email' => ['nullable', 'email', 'max:150'],
                 'contact_phone' => ['required', 'string', 'max:20'],
@@ -244,6 +250,9 @@ class PostRequirementWizard extends Component
             ...$this->rulesForStep(1),
             ...$this->rulesForStep(2),
             ...$this->rulesForStep(3),
+            ...$this->rulesForStep(4),
+            ...$this->rulesForStep(5),
+            ...$this->rulesForStep(6),
         ]);
 
         if ($this->requirementId) {

@@ -51,9 +51,26 @@ it('validates required fields on the requirement wizard first step', function ()
 
     Livewire::actingAs($buyer)
         ->test(PostRequirementWizard::class)
+        ->set('intent', '')
+        ->call('nextStep')
+        ->assertHasErrors(['intent']);
+});
+
+it('validates required fields on the requirement wizard property type step', function () {
+    $buyer = makeBuyer();
+
+    Livewire::actingAs($buyer)
+        ->test(PostRequirementWizard::class)
+        ->set('intent', 'rent')
+        ->call('nextStep')
+        ->assertSet('step', 2)
         ->set('title', 'short')
         ->call('nextStep')
-        ->assertHasErrors(['title', 'property_category_id', 'city_id']);
+        ->assertHasErrors(['title', 'property_category_id']);
+});
+
+it('has seven total steps', function () {
+    expect(PostRequirementWizard::TOTAL_STEPS)->toBe(7);
 });
 
 it('lets a user submit a requirement end to end through the wizard', function () {
@@ -61,19 +78,25 @@ it('lets a user submit a requirement end to end through the wizard', function ()
 
     $component = Livewire::actingAs($buyer)
         ->test(PostRequirementWizard::class)
-        ->set('title', 'Looking for a 2BHK apartment to rent')
         ->set('intent', 'rent')
-        ->set('property_nature', 'residential')
-        ->set('property_category_id', $this->category->id)
-        ->set('city_id', $this->city->id)
         ->call('nextStep')
         ->assertSet('step', 2)
+        ->set('title', 'Looking for a 2BHK apartment to rent')
+        ->set('property_nature', 'residential')
+        ->set('property_category_id', $this->category->id)
         ->call('nextStep')
         ->assertSet('step', 3)
+        ->set('city_id', $this->city->id)
+        ->call('nextStep')
+        ->assertSet('step', 4)
+        ->call('nextStep')
+        ->assertSet('step', 5)
+        ->call('nextStep')
+        ->assertSet('step', 6)
         ->set('contact_name', $buyer->name)
         ->set('contact_phone', '9000000002')
         ->call('nextStep')
-        ->assertSet('step', 4)
+        ->assertSet('step', 7)
         ->call('submit');
 
     $component->assertRedirect();

@@ -19,8 +19,8 @@
             <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
                    class="fixed inset-y-0 left-0 z-40 w-64 transform bg-slate-900 text-slate-300 transition-transform lg:static lg:translate-x-0">
                 <div class="flex h-16 items-center gap-2 px-5 text-white">
-                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-sm font-bold">N</span>
-                    <span class="font-extrabold">Nestly Admin</span>
+                    <img src="{{ asset('images/logo.png') }}" alt="BHKnow" class="h-8 w-auto object-contain">
+                    <span class="font-extrabold">BHKnow Admin</span>
                 </div>
                 <nav class="mt-2 space-y-0.5 px-3">
                     @php

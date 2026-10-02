@@ -3,6 +3,7 @@
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LocationSearchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyRequirementController;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', HomeController::class)->name('home');
 
 Route::get('/properties', PropertySearchController::class)->name('properties.index');
+
+Route::get('/locations/search', [LocationSearchController::class, 'index'])->name('locations.search');
 
 Route::middleware('auth')->group(function () {
     Route::get('/properties/create', [PropertyController::class, 'create'])->name('properties.create');
@@ -48,6 +51,7 @@ Route::view('/dashboard', 'marketplace.dashboard')->middleware(['auth', 'verifie
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/roles', [ProfileController::class, 'updateRoles'])->name('profile.roles.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

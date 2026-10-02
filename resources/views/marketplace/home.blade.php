@@ -28,50 +28,28 @@
             </div>
 
             {{-- Search card --}}
-            <div x-data="{ intent: 'buy' }" class="mx-auto mt-10 max-w-4xl rounded-2xl bg-white p-3 shadow-2xl sm:p-4">
-                <div class="flex gap-1 rounded-xl bg-slate-100 p-1">
-                    <button type="button" @click="intent = 'buy'"
-                            :class="intent === 'buy' ? 'bg-white shadow text-slate-900' : 'text-slate-500'"
-                            class="flex-1 rounded-lg px-4 py-2 text-sm font-bold transition">Buy</button>
-                    <button type="button" @click="intent = 'rent'"
-                            :class="intent === 'rent' ? 'bg-white shadow text-slate-900' : 'text-slate-500'"
-                            class="flex-1 rounded-lg px-4 py-2 text-sm font-bold transition">Rent</button>
-                </div>
+            <x-marketplace.search-bar :categories="$categories" />
+        </div>
+    </section>
 
-                <form method="GET" action="{{ route('properties.index') }}" class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-4">
-                    <input type="hidden" name="intent" :value="intent">
-
-                    <select name="city" class="col-span-1 rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-                        <option value="">Any City</option>
-                        @foreach ($popularCities as $city)
-                            <option value="{{ $city->slug }}">{{ $city->name }}</option>
-                        @endforeach
-                    </select>
-
-                    <select name="category" class="col-span-1 rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-                        <option value="">Property Type</option>
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->slug }}">{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-
-                    <select name="price_max" class="col-span-1 rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-                        <option value="">Any Budget</option>
-                        <option value="2500000">Up to ₹25L</option>
-                        <option value="5000000">Up to ₹50L</option>
-                        <option value="10000000">Up to ₹1Cr</option>
-                        <option value="25000000">Up to ₹2.5Cr</option>
-                    </select>
-
-                    <button type="submit" class="col-span-1 flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="7" stroke-linecap="round" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m20 20-3.5-3.5" />
-                        </svg>
-                        Search
-                    </button>
-                </form>
-            </div>
+    {{-- Explore by --}}
+    <section class="mx-auto max-w-7xl px-4 pt-12 sm:px-6 lg:px-8">
+        <h2 class="text-center text-sm font-bold uppercase tracking-wide text-slate-400">Explore by</h2>
+        <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            @foreach ([
+                ['label' => 'Buy', 'icon' => '🏠', 'params' => ['intent' => 'buy']],
+                ['label' => 'Rent', 'icon' => '🏢', 'params' => ['intent' => 'rent']],
+                ['label' => 'Popular Locations', 'icon' => '📍', 'params' => []],
+                ['label' => 'Affordable Homes', 'icon' => '💰', 'params' => ['price_max' => 5000000]],
+                ['label' => 'Premium Properties', 'icon' => '✨', 'params' => ['price_min' => 10000000]],
+                ['label' => 'New Listings', 'icon' => '🏘️', 'params' => []],
+            ] as $card)
+                <a href="{{ route('properties.index', $card['params']) }}"
+                   class="flex flex-col items-center gap-2 rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md">
+                    <span class="text-2xl">{{ $card['icon'] }}</span>
+                    <span class="text-sm font-semibold text-slate-700">{{ $card['label'] }}</span>
+                </a>
+            @endforeach
         </div>
     </section>
 
@@ -192,7 +170,7 @@
     {{-- How it works --}}
     <section id="how-it-works" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-2xl text-center">
-            <h2 class="text-2xl font-extrabold text-slate-900">How Nestly Works</h2>
+            <h2 class="text-2xl font-extrabold text-slate-900">How BHKnow Works</h2>
             <p class="mt-2 text-slate-500">Whether you're searching or listing, getting started takes minutes.</p>
         </div>
         <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
@@ -215,7 +193,7 @@
     {{-- Benefits --}}
     <section class="bg-slate-900 py-16">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl font-extrabold text-white text-center">Why Choose Nestly</h2>
+            <h2 class="text-2xl font-extrabold text-white text-center">Why Choose BHKnow</h2>
             <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ([
                     'Verified Listings' => 'Every listing goes through an admin review before going live.',

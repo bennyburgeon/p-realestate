@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAuthenticatedSessionController;
 use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -9,6 +10,14 @@ use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\RequirementController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
+
+// Admin login is kept completely separate from the public OTP auth flow —
+// same users table/web guard, but its own URL, controller, and view so
+// admins never see public chrome and public users never land on admin UI.
+Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
+    Route::get('login', [AdminAuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('login', [AdminAuthenticatedSessionController::class, 'store']);
+});
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'role:super_admin|admin'])->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');

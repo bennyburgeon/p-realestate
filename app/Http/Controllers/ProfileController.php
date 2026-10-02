@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfileRolesUpdateRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,6 +36,22 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Update the roles (buyer/tenant, owner, agent) the user has opted into.
+     * Any elevated roles (super_admin/admin/developer) the user already
+     * holds are preserved untouched.
+     */
+    public function updateRoles(ProfileRolesUpdateRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        $preserved = $user->roles()->whereIn('name', ['super_admin', 'admin', 'developer'])->pluck('name')->all();
+
+        $user->syncRoles([...$preserved, ...$request->validated('roles', [])]);
+
+        return Redirect::route('profile.edit')->with('roles_status', 'roles-updated');
     }
 
     /**

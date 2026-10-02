@@ -17,16 +17,23 @@ class RegistrationTest extends TestCase
         $this->seed(RolePermissionSeeder::class);
     }
 
-    public function test_registration_screen_can_be_rendered(): void
+    public function test_registration_screen_redirects_to_the_otp_login_screen(): void
     {
         $response = $this->get('/register');
+
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_legacy_password_registration_screen_can_be_rendered(): void
+    {
+        $response = $this->get('/register/password');
 
         $response->assertStatus(200);
     }
 
-    public function test_new_users_can_register(): void
+    public function test_new_users_can_register_via_the_legacy_password_screen(): void
     {
-        $response = $this->post('/register', [
+        $response = $this->post('/register/password', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'phone' => '+91 90000 00099',
@@ -41,7 +48,7 @@ class RegistrationTest extends TestCase
 
     public function test_registered_user_is_assigned_the_selected_role(): void
     {
-        $this->post('/register', [
+        $this->post('/register/password', [
             'name' => 'Owner User',
             'email' => 'owner-signup@example.com',
             'phone' => '+91 90000 00098',
