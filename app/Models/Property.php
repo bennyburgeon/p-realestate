@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasStatus;
+use App\Traits\HasStatusHistory;
 use Database\Factories\PropertyFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,11 +29,14 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
     'address', 'landmark', 'pin_code', 'latitude', 'longitude',
     'contact_preference', 'contact_phone', 'contact_email',
     'is_verified', 'is_featured', 'published_at',
+    'address_visibility', 'price_per_sqft', 'min_acceptable_price',
+    'agent_name', 'agent_phone', 'agent_email', 'agency_name', 'agent_license_number',
+    'sold_at', 'sold_price', 'buyer_source', 'sold_notes',
 ])]
 class Property extends Model implements HasMedia
 {
     /** @use HasFactory<PropertyFactory> */
-    use HasFactory, HasStatus, HasUuids, InteractsWithMedia, SoftDeletes;
+    use HasFactory, HasStatus, HasStatusHistory, HasUuids, InteractsWithMedia, SoftDeletes;
 
     public const string LISTING_SALE = 'sale';
 
@@ -63,7 +67,23 @@ class Property extends Model implements HasMedia
             'is_featured' => 'boolean',
             'availability_date' => 'date',
             'published_at' => 'datetime',
+            'address_visibility' => 'boolean',
+            'price_per_sqft' => 'decimal:2',
+            'min_acceptable_price' => 'decimal:2',
+            'sold_at' => 'datetime',
+            'sold_price' => 'decimal:2',
         ];
+    }
+
+    public function isLive(): bool
+    {
+        return in_array($this->status_id, Status::publicPropertyStatuses(), true);
+    }
+
+    public function coverImage(): ?Media
+    {
+        return $this->getMedia('images')->firstWhere('custom_properties.is_cover', true)
+            ?? $this->getFirstMedia('images');
     }
 
     public function getRouteKeyName(): string
@@ -74,9 +94,11 @@ class Property extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images')
+            ->useDisk('public')
             ->useFallbackUrl('/images/property-placeholder.svg');
 
-        $this->addMediaCollection('documents');
+        $this->addMediaCollection('documents')
+            ->useDisk('local');
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -150,6 +172,14 @@ class Property extends Model implements HasMedia
     public function requirementResponses(): HasMany
     {
         return $this->hasMany(RequirementResponse::class);
+    }
+
+    /**
+     * @return HasMany<SiteVisit, $this>
+     */
+    public function siteVisits(): HasMany
+    {
+        return $this->hasMany(SiteVisit::class);
     }
 
     /**

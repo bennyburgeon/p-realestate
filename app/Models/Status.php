@@ -67,6 +67,10 @@ class Status extends Model
 
     public const int ENQUIRY_CLOSED = 25;
 
+    public const int PROPERTY_CHANGES_REQUESTED = 26;
+
+    public const int ENQUIRY_VISIT_SCHEDULED = 27;
+
     /**
      * Statuses considered "live" on the public marketplace.
      *

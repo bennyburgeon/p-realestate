@@ -14,6 +14,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
+        @stack('head')
     </head>
     <body class="font-sans antialiased text-slate-900 bg-white pb-16 md:pb-0">
         <div>

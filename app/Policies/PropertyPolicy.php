@@ -19,7 +19,16 @@ class PropertyPolicy
 
     public function view(?User $user, Property $property): bool
     {
-        return true;
+        if ($property->isLive()) {
+            return true;
+        }
+
+        return $user !== null && $user->id === $property->user_id;
+    }
+
+    public function viewDocuments(User $user, Property $property): bool
+    {
+        return $user->id === $property->user_id;
     }
 
     public function create(User $user): bool
@@ -45,5 +54,25 @@ class PropertyPolicy
     public function forceDelete(User $user, Property $property): bool
     {
         return false;
+    }
+
+    public function approve(User $user, Property $property): bool
+    {
+        return false;
+    }
+
+    public function reject(User $user, Property $property): bool
+    {
+        return false;
+    }
+
+    public function requestChanges(User $user, Property $property): bool
+    {
+        return false;
+    }
+
+    public function markAsSold(User $user, Property $property): bool
+    {
+        return $user->id === $property->user_id;
     }
 }

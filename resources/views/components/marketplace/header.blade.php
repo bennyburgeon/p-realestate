@@ -32,6 +32,12 @@
         </nav>
 
         <div class="hidden items-center gap-2 md:flex">
+            <a href="{{ route('properties.sell.create') }}"
+               class="rounded-full px-3 py-2 text-sm font-semibold transition-colors"
+               :class="scrolled ? 'text-neutral-700 hover:bg-neutral-100' : 'text-white/90 hover:text-white'">
+                Sell Property
+            </a>
+
             <a href="{{ route('requirements.create') }}"
                class="inline-flex items-center gap-1.5 rounded-full bg-secondary-500 px-4 py-2 text-sm font-bold text-primary-900 shadow-sm shadow-secondary-500/30 transition hover:bg-secondary-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -52,6 +58,7 @@
                          class="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-neutral-100 bg-white py-1 shadow-xl">
                         <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50">Dashboard</a>
                         <a href="{{ route('requirements.mine') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50">My Requirements</a>
+                        <a href="{{ route('properties.mine') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50">My Properties</a>
                         <a href="{{ route('favourites.index') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50">Favourites</a>
                         @if (auth()->user()->hasRole(['super_admin', 'admin']))
                             <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50">Admin Panel</a>
@@ -86,9 +93,11 @@
                     {{ $link['label'] }}
                 </a>
             @endforeach
+            <a href="{{ route('properties.sell.create') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">Sell Property</a>
             <a href="{{ route('requirements.create') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-secondary-700 hover:bg-neutral-50">+ Post Requirement</a>
             @auth
                 <a href="{{ route('dashboard') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">Dashboard</a>
+                <a href="{{ route('properties.mine') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">My Properties</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50">Log Out</button>

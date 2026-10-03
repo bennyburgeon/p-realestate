@@ -1,16 +1,16 @@
 <?php
 
+use App\Models\OneTimePassword;
 use App\Models\User;
-use Illuminate\Support\Facades\Cache;
 
 it('renders the otp login screen', function () {
     $this->get('/login')->assertStatus(200);
 });
 
-it('stores an otp in cache for a valid phone number', function () {
+it('stores an otp in the database for a valid phone number', function () {
     $this->post('/login/otp', ['phone' => '9876543210'])->assertRedirect(route('login'));
 
-    expect(Cache::get('otp:9876543210'))->not->toBeNull();
+    $this->assertDatabaseHas('one_time_passwords', ['phone' => '9876543210', 'code' => '1234']);
 });
 
 it('rejects an invalid phone format', function () {

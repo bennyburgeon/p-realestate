@@ -9,9 +9,12 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyRequirementController;
 use App\Http\Controllers\PropertySearchController;
 use App\Http\Controllers\RequirementResponseController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\SiteVisitController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::get('/properties', PropertySearchController::class)->name('properties.index');
 
@@ -20,6 +23,10 @@ Route::get('/locations/search', [LocationSearchController::class, 'index'])->nam
 Route::middleware('auth')->group(function () {
     Route::get('/properties/create', [PropertyController::class, 'create'])->name('properties.create');
     Route::post('/properties', [PropertyController::class, 'store'])->name('properties.store');
+    Route::get('/properties/mine', [PropertyController::class, 'mine'])->name('properties.mine');
+    Route::get('/properties/sell', [PropertyController::class, 'sell'])->name('properties.sell.create');
+    Route::get('/properties/{property}/sell/edit', [PropertyController::class, 'sellEdit'])->name('properties.sell.edit');
+    Route::post('/properties/{property}/mark-sold', [PropertyController::class, 'markSold'])->name('properties.mark-sold');
     Route::get('/properties/{property}/edit', [PropertyController::class, 'edit'])->name('properties.edit');
     Route::put('/properties/{property}', [PropertyController::class, 'update'])->name('properties.update');
     Route::delete('/properties/{property}', [PropertyController::class, 'destroy'])->name('properties.destroy');
@@ -42,6 +49,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/requirements/{propertyRequirement}/renew', [PropertyRequirementController::class, 'renew'])->name('requirements.renew');
     Route::delete('/requirements/{propertyRequirement}', [PropertyRequirementController::class, 'destroy'])->name('requirements.destroy');
     Route::post('/requirements/{propertyRequirement}/respond', RequirementResponseController::class)->name('requirements.respond');
+
+    Route::post('/enquiries/{enquiry}/schedule-visit', [SiteVisitController::class, 'schedule'])->name('enquiries.schedule-visit');
+    Route::post('/site-visits/{siteVisit}/status', [SiteVisitController::class, 'updateStatus'])->name('site-visits.status');
 });
 
 Route::get('/requirements/{propertyRequirement}', [PropertyRequirementController::class, 'show'])->name('requirements.show');

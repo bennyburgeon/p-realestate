@@ -205,6 +205,44 @@
         </div>
     </section>
 
+    {{-- Sell Your Property — signature section --}}
+    <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="relative overflow-hidden rounded-3xl border border-neutral-100 bg-gradient-to-br from-white via-neutral-50 to-primary-50 p-10 shadow-sm sm:p-14">
+            <div class="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-secondary-200/40 blur-3xl"></div>
+            <div class="relative grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
+                <div>
+                    <p class="text-sm font-bold uppercase tracking-wide text-secondary-600">Sell Your Property</p>
+                    <h2 class="mt-2 font-display text-3xl font-bold text-primary-900 sm:text-4xl">
+                        Have a property to sell?
+                    </h2>
+                    <p class="mt-4 text-lg text-neutral-600">
+                        Put it in front of genuine buyers searching on BHKnow.
+                    </p>
+                    <a href="{{ route('properties.sell.create') }}"
+                       class="mt-8 inline-flex items-center gap-2 rounded-full bg-primary-900 px-7 py-3.5 text-base font-bold text-white shadow-lg shadow-primary-900/20 transition hover:bg-primary-800">
+                        Sell Your Property
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" /></svg>
+                    </a>
+                    <p class="mt-4 text-sm font-semibold text-neutral-500">Free listing &bull; Professional property presentation &bull; Buyer enquiries</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="rounded-2xl border border-neutral-100 bg-white p-5 shadow-sm">
+                        <p class="text-2xl font-bold text-primary-900">8 steps</p>
+                        <p class="mt-1 text-sm text-neutral-500">Guided listing wizard — no clunky forms</p>
+                    </div>
+                    <div class="rounded-2xl border border-neutral-100 bg-white p-5 shadow-sm">
+                        <p class="text-2xl font-bold text-primary-900">Verified</p>
+                        <p class="mt-1 text-sm text-neutral-500">Every listing reviewed before it goes live</p>
+                    </div>
+                    <div class="col-span-2 rounded-2xl border border-neutral-100 bg-white p-5 shadow-sm">
+                        <p class="text-sm font-semibold text-neutral-700">Owners &amp; agents welcome</p>
+                        <p class="mt-1 text-sm text-neutral-500">List as a property owner or as a licensed agent/broker — buyers always know who they're talking to.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- Recently posted requirements --}}
     @if ($recentRequirements->isNotEmpty())
         <section class="bg-neutral-50 py-16">

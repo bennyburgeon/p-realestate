@@ -7,10 +7,13 @@ return [
     | OTP Driver
     |--------------------------------------------------------------------------
     |
-    | "temporary" returns a fixed development code. Swap to a future
-    | "whatsapp" driver once a real provider is wired up; the rest of the
+    | "temporary" (default) always uses the fixed code below and never
+    | actually sends anything — for local/dev testing. Set OTP_DRIVER=
+    | whatsapp to generate a real random code and deliver it over WhatsApp
+    | (the provider call itself still needs real credentials wired into
+    | WhatsAppOtpService::dispatch() before it's live). The rest of the
     | application only depends on OtpServiceContract, so no controller or
-    | view changes are needed when the driver changes.
+    | view changes are needed when switching drivers.
     |
     */
     'driver' => env('OTP_DRIVER', 'temporary'),

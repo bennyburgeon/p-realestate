@@ -5,9 +5,46 @@
         ? ($property->price ? '₹' . number_format((float) $property->price, 0) : 'Price on request')
         : ($property->rent_amount ? '₹' . number_format((float) $property->rent_amount, 0) . ' /month' : 'Rent on request');
     $isOwner = auth()->check() && auth()->id() === $property->user_id;
+    $seoDescription = Str::limit(strip_tags($property->description ?? ''), 155);
+    $seoImage = $property->coverImage()?->getUrl('large') ?: $property->coverImage()?->getUrl() ?: asset('images/property-placeholder.svg');
+    $seoAddress = $property->address_visibility
+        ? $property->address
+        : ($property->location?->displayName() ?? $property->landmark);
 @endphp
 
-<x-layouts.marketplace :title="$property->title" :description="Str::limit(strip_tags($property->description), 150)">
+@push('head')
+    <link rel="canonical" href="{{ route('properties.show', $property) }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ $property->title }}">
+    <meta property="og:description" content="{{ $seoDescription }}">
+    <meta property="og:image" content="{{ $seoImage }}">
+    <meta property="og:url" content="{{ route('properties.show', $property) }}">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <script type="application/ld+json">
+        {!! json_encode([
+            '@context' => 'https://schema.org',
+            '@type' => 'RealEstateListing',
+            'name' => $property->title,
+            'description' => $seoDescription,
+            'url' => route('properties.show', $property),
+            'image' => $seoImage,
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => $seoAddress,
+                'addressLocality' => $property->location?->displayName(),
+                'addressCountry' => $property->location?->country ?? 'IN',
+            ],
+            'offers' => [
+                '@type' => 'Offer',
+                'price' => (string) ($isSale ? $property->price : $property->rent_amount),
+                'priceCurrency' => 'INR',
+            ],
+        ], JSON_UNESCAPED_SLASHES) !!}
+    </script>
+@endpush
+
+<x-layouts.marketplace :title="$property->title" :description="$seoDescription">
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 
         <nav class="mb-4 flex items-center gap-1.5 text-xs text-slate-400">
@@ -68,7 +105,11 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11Z" /><circle cx="12" cy="10" r="2.5" />
                     </svg>
-                    {{ $property->address }}, {{ $property->location?->displayName() }}
+                    @if ($property->address_visibility || $isOwner)
+                        {{ $property->address }}, {{ $property->location?->displayName() }}
+                    @else
+                        {{ $property->location?->displayName() }}
+                    @endif
                 </p>
 
                 <p class="mt-4 text-3xl font-extrabold text-emerald-700">{{ $priceLabel }}

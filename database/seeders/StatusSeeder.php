@@ -24,6 +24,7 @@ class StatusSeeder extends Seeder
             [Status::PROPERTY_REJECTED, 'property', 'rejected', 'Rejected', 'red'],
             [Status::PROPERTY_SUSPENDED, 'property', 'suspended', 'Suspended', 'red'],
             [Status::PROPERTY_ARCHIVED, 'property', 'archived', 'Archived', 'gray'],
+            [Status::PROPERTY_CHANGES_REQUESTED, 'property', 'changes_requested', 'Changes Requested', 'amber'],
 
             // requirement
             [Status::REQUIREMENT_DRAFT, 'requirement', 'draft', 'Draft', 'gray'],
@@ -42,6 +43,7 @@ class StatusSeeder extends Seeder
             [Status::ENQUIRY_NEW, 'enquiry', 'new', 'New', 'blue'],
             [Status::ENQUIRY_CONTACTED, 'enquiry', 'contacted', 'Contacted', 'amber'],
             [Status::ENQUIRY_CLOSED, 'enquiry', 'closed', 'Closed', 'gray'],
+            [Status::ENQUIRY_VISIT_SCHEDULED, 'enquiry', 'visit_scheduled', 'Visit Scheduled', 'blue'],
         ];
 
         foreach ($statuses as $index => [$id, $group, $slug, $label, $color]) {

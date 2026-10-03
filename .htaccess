@@ -1,11 +1,14 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
 
     # Already inside the public folder's own rewrite (avoid double-processing)
     RewriteCond %{REQUEST_URI} ^/public/
     RewriteRule ^ - [L]
 
-    # Serve everything through the public/ front controller
+    # Any request that isn't a real file/folder at the project root — including
+    # build/assets/*.css, build/assets/*.js, images/*, storage/* — gets
+    # prefixed with public/ and re-resolved against the real public/ folder.
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ public/$1 [L]

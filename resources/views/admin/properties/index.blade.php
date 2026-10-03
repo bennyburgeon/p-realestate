@@ -28,7 +28,7 @@
                 @foreach ($properties as $property)
                     <tr>
                         <td class="px-4 py-3">
-                            <a href="{{ route('properties.show', $property) }}" target="_blank" class="font-semibold text-slate-800 hover:text-emerald-700">{{ Str::limit($property->title, 40) }}</a>
+                            <a href="{{ route('admin.properties.show', $property) }}" class="font-semibold text-slate-800 hover:text-emerald-700">{{ Str::limit($property->title, 40) }}</a>
                             <p class="text-xs text-slate-400">{{ $property->location?->displayName() }}</p>
                         </td>
                         <td class="px-4 py-3 text-slate-600">{{ $property->owner->name }}</td>
@@ -42,14 +42,11 @@
                         </td>
                         <td class="px-4 py-3">
                             <div class="flex justify-end gap-1.5">
-                                @if ($property->status_id === \App\Models\Status::PROPERTY_PENDING_REVIEW)
+                                <a href="{{ route('admin.properties.show', $property) }}" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50">Review</a>
+                                @if ($property->status_id === \App\Models\Status::PROPERTY_PENDING_REVIEW || $property->status_id === \App\Models\Status::PROPERTY_CHANGES_REQUESTED)
                                     <form method="POST" action="{{ route('admin.properties.approve', $property) }}">
                                         @csrf
                                         <button class="rounded-lg bg-emerald-100 px-2.5 py-1.5 text-xs font-bold text-emerald-700 hover:bg-emerald-200">Approve</button>
-                                    </form>
-                                    <form method="POST" action="{{ route('admin.properties.reject', $property) }}">
-                                        @csrf
-                                        <button class="rounded-lg bg-red-100 px-2.5 py-1.5 text-xs font-bold text-red-700 hover:bg-red-200">Reject</button>
                                     </form>
                                 @endif
                                 <form method="POST" action="{{ route('admin.properties.toggle-featured', $property) }}">

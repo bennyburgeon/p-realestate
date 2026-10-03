@@ -6,7 +6,8 @@
     $priceLabel = $amount
         ? '₹' . number_format((float) $amount, 0) . ($isSale ? '' : ' /mo')
         : 'Price on request';
-    $image = $property->getFirstMediaUrl('images', 'thumb') ?: $property->getFirstMediaUrl('images') ?: asset('images/property-placeholder.svg');
+    $cover = $property->coverImage();
+    $image = $cover?->getUrl('thumb') ?: $cover?->getUrl() ?: asset('images/property-placeholder.svg');
     $isFavourited = auth()->check() && $property->relationLoaded('favouritedBy')
         ? $property->favouritedBy->contains('user_id', auth()->id())
         : false;

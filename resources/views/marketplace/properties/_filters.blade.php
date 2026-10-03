@@ -28,6 +28,18 @@
     </div>
 
     <div>
+        <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Nature</label>
+        <div class="mt-2 grid grid-cols-2 gap-1.5">
+            @foreach (['residential' => 'Residential', 'commercial' => 'Commercial'] as $value => $label)
+                <label class="flex cursor-pointer items-center justify-center rounded-lg border border-slate-200 py-2 text-xs font-semibold text-slate-600 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50 has-[:checked]:text-emerald-700">
+                    <input type="radio" name="nature" value="{{ $value }}" class="sr-only" @checked(($filters['nature'] ?? null) === $value)>
+                    {{ $label }}
+                </label>
+            @endforeach
+        </div>
+    </div>
+
+    <div>
         <label class="text-xs font-bold uppercase tracking-wide text-slate-500" for="category-{{ $suffix }}">Property Type</label>
         <select id="category-{{ $suffix }}" name="category" class="mt-1.5 w-full rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
             <option value="">Any Type</option>
@@ -58,6 +70,26 @@
     </div>
 
     <div>
+        <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Bathrooms</label>
+        <div class="mt-1.5 flex flex-wrap gap-1.5">
+            @foreach ([1, 2, 3, 4] as $n)
+                <label class="flex cursor-pointer items-center justify-center rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50 has-[:checked]:text-emerald-700">
+                    <input type="radio" name="bathrooms" value="{{ $n }}" class="sr-only" @checked((int) ($filters['bathrooms'] ?? 0) === $n)>
+                    {{ $n }}+
+                </label>
+            @endforeach
+        </div>
+    </div>
+
+    <div>
+        <label class="text-xs font-bold uppercase tracking-wide text-slate-500">Built-up area (sqft)</label>
+        <div class="mt-1.5 grid grid-cols-2 gap-2">
+            <input type="number" name="area_min" value="{{ $filters['area_min'] ?? '' }}" placeholder="Min" class="w-full rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+            <input type="number" name="area_max" value="{{ $filters['area_max'] ?? '' }}" placeholder="Max" class="w-full rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+        </div>
+    </div>
+
+    <div>
         <label class="text-xs font-bold uppercase tracking-wide text-slate-500" for="furnishing-{{ $suffix }}">Furnishing</label>
         <select id="furnishing-{{ $suffix }}" name="furnishing" class="mt-1.5 w-full rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
             <option value="">Any</option>
@@ -70,6 +102,11 @@
     <label class="flex items-center gap-2 text-sm font-medium text-slate-700">
         <input type="checkbox" name="verified_only" value="1" @checked($filters['verified_only'] ?? false) class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
         Verified listings only
+    </label>
+
+    <label class="flex items-center gap-2 text-sm font-medium text-slate-700">
+        <input type="checkbox" name="featured_only" value="1" @checked($filters['featured_only'] ?? false) class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
+        Featured listings only
     </label>
 
     <button type="submit" class="w-full rounded-lg bg-slate-900 py-2.5 text-sm font-bold text-white hover:bg-slate-800">Apply Filters</button>

@@ -24,11 +24,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'role:su
 
     Route::prefix('properties')->name('properties.')->group(function () {
         Route::get('/', [PropertyController::class, 'index'])->name('index');
+        Route::get('/{property}', [PropertyController::class, 'show'])->name('show');
         Route::post('/{property}/approve', [PropertyController::class, 'approve'])->name('approve');
         Route::post('/{property}/reject', [PropertyController::class, 'reject'])->name('reject');
+        Route::post('/{property}/request-changes', [PropertyController::class, 'requestChanges'])->name('request-changes');
+        Route::post('/{property}/mark-sold', [PropertyController::class, 'markSold'])->name('mark-sold');
         Route::post('/{property}/toggle-featured', [PropertyController::class, 'toggleFeatured'])->name('toggle-featured');
         Route::post('/{property}/toggle-verified', [PropertyController::class, 'toggleVerified'])->name('toggle-verified');
         Route::post('/{property}/status', [PropertyController::class, 'updateStatus'])->name('status');
+        Route::get('/{property}/documents/{media}', [PropertyController::class, 'downloadDocument'])->name('documents.download');
     });
 
     Route::prefix('requirements')->name('requirements.')->group(function () {
