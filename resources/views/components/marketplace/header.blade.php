@@ -86,7 +86,7 @@
         </button>
     </div>
 
-    <div x-show="mobileOpen" x-cloak x-transition class="border-t border-neutral-100 bg-white px-4 py-3 md:hidden">
+    <div x-show="mobileOpen" x-cloak x-transition @click.outside="mobileOpen = false" class="border-t border-neutral-100 bg-white px-4 py-3 md:hidden">
         <div class="flex flex-col gap-1">
             @foreach ($navLinks as $link)
                 <a href="{{ route($link['route'], $link['params']) }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">
@@ -96,8 +96,15 @@
             <a href="{{ route('properties.sell.create') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">Sell Property</a>
             <a href="{{ route('requirements.create') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-secondary-700 hover:bg-neutral-50">+ Post Requirement</a>
             @auth
+                <div class="my-1 border-t border-neutral-100"></div>
                 <a href="{{ route('dashboard') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">Dashboard</a>
+                <a href="{{ route('requirements.mine') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">My Requirements</a>
                 <a href="{{ route('properties.mine') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">My Properties</a>
+                <a href="{{ route('favourites.index') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">Favourites</a>
+                @if (auth()->user()->hasRole(['super_admin', 'admin']))
+                    <a href="{{ route('admin.dashboard') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">Admin Panel</a>
+                @endif
+                <a href="{{ route('profile.edit') }}" class="rounded-lg px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50">Profile Settings</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-red-600 hover:bg-red-50">Log Out</button>
