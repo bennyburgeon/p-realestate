@@ -38,7 +38,7 @@ it('lets an owner create a property as a draft', function () {
     ]);
 
     expect($property->status_id)->toBe(Status::PROPERTY_DRAFT)
-        ->and($property->slug)->toBe('cosy-2bhk-apartment')
+        ->and($property->slug)->toBe('cosy-2bhk-apartment-for-rent-testville')
         ->and($property->user_id)->toBe($owner->id);
 });
 

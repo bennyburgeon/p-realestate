@@ -17,25 +17,25 @@ class DemoDataSeeder extends Seeder
     {
         $admin = User::firstOrCreate(
             ['email' => 'admin@realestate.test'],
-            ['name' => 'Platform Admin', 'password' => bcrypt('password'), 'phone' => '+91 90000 00001']
+            ['name' => 'Platform Admin', 'password' => bcrypt('password'), 'phone' => '9000000001']
         );
         $admin->assignRole('super_admin');
 
         $owner = User::firstOrCreate(
             ['email' => 'owner@realestate.test'],
-            ['name' => 'Asha Owner', 'password' => bcrypt('password'), 'phone' => '+91 90000 00002']
+            ['name' => 'Asha Owner', 'password' => bcrypt('password'), 'phone' => '9000000002']
         );
         $owner->assignRole('owner');
 
         $agent = User::firstOrCreate(
             ['email' => 'agent@realestate.test'],
-            ['name' => 'Rahul Agent', 'password' => bcrypt('password'), 'phone' => '+91 90000 00003']
+            ['name' => 'Rahul Agent', 'password' => bcrypt('password'), 'phone' => '9000000003']
         );
         $agent->assignRole('agent');
 
         $buyer = User::firstOrCreate(
             ['email' => 'buyer@realestate.test'],
-            ['name' => 'Priya Buyer', 'password' => bcrypt('password'), 'phone' => '+91 90000 00004']
+            ['name' => 'Priya Buyer', 'password' => bcrypt('password'), 'phone' => '9000000004']
         );
         $buyer->assignRole('buyer_tenant');
 

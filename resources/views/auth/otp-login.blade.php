@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Log In">
     <div x-data="{ resendIn: 30 }" x-init="if (resendIn > 0) { const t = setInterval(() => { resendIn--; if (resendIn <= 0) clearInterval(t); }, 1000); }">
         <div class="text-center">
             <h1 class="font-display text-2xl font-bold text-primary-900">{{ $phone ? 'Enter your code' : 'Find your place. Start here.' }}</h1>

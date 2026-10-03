@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Register">
     <h1 class="mb-1 text-xl font-bold text-slate-900">Create your account</h1>
     <p class="mb-6 text-sm text-slate-500">Buy, rent, list properties or post what you're looking for.</p>
 
