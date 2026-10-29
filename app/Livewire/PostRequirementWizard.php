@@ -114,7 +114,7 @@ class PostRequirementWizard extends Component
 
     public function cities(): Collection
     {
-        return Location::where('type', Location::TYPE_CITY)->orderBy('name')->get();
+        return Location::where('type', Location::TYPE_CITY)->orderByRaw('district is null')->orderBy('district')->orderBy('name')->get();
     }
 
     public function localities(): Collection

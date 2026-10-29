@@ -14,7 +14,18 @@ class LocationController extends Controller
     public function index(): View
     {
         return view('admin.locations.index', [
-            'cities' => Location::where('type', Location::TYPE_CITY)->withCount(['localities', 'properties'])->orderBy('name')->get(),
+            'cities' => Location::where('type', Location::TYPE_CITY)
+                ->withCount(['localities', 'properties'])
+                ->orderByRaw('district is null')
+                ->orderBy('district')
+                ->orderBy('name')
+                ->paginate(50)
+                ->withQueryString(),
+            'allCities' => Location::where('type', Location::TYPE_CITY)
+                ->orderByRaw('district is null')
+                ->orderBy('district')
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 

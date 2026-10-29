@@ -9,6 +9,7 @@ use App\Models\PropertyCategory;
 use App\Services\PropertyService;
 use Illuminate\Support\Collection;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
 class SellPropertyWizard extends Component
@@ -95,12 +96,12 @@ class SellPropertyWizard extends Component
     public ?string $min_acceptable_price = null;
 
     // Step 5: Photos + documents
-    /** @var array<int, \Livewire\Features\SupportFileUploads\TemporaryUploadedFile> */
+    /** @var array<int, TemporaryUploadedFile> */
     public array $photos = [];
 
     public int $coverIndex = 0;
 
-    /** @var array<int, \Livewire\Features\SupportFileUploads\TemporaryUploadedFile> */
+    /** @var array<int, TemporaryUploadedFile> */
     public array $documents = [];
 
     // Step 6: Owner / agent
@@ -161,7 +162,7 @@ class SellPropertyWizard extends Component
 
     public function cities(): Collection
     {
-        return Location::where('type', Location::TYPE_CITY)->orderBy('name')->get();
+        return Location::where('type', Location::TYPE_CITY)->orderByRaw('district is null')->orderBy('district')->orderBy('name')->get();
     }
 
     public function amenities(): Collection

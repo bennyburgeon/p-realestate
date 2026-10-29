@@ -18,8 +18,12 @@
                 <label class="text-xs font-semibold text-slate-500">Parent City (for locality)</label>
                 <select name="parent_id" class="mt-1 rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
                     <option value="">&mdash;</option>
-                    @foreach ($cities as $city)
-                        <option value="{{ $city->id }}">{{ $city->name }}</option>
+                    @foreach ($allCities->groupBy(fn ($city) => $city->district ?? 'Other') as $district => $districtCities)
+                        <optgroup label="{{ $district }}">
+                            @foreach ($districtCities as $city)
+                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                            @endforeach
+                        </optgroup>
                     @endforeach
                 </select>
             </div>
@@ -34,12 +38,13 @@
     <div class="overflow-x-auto rounded-2xl border border-slate-100 bg-white">
         <table class="min-w-full divide-y divide-slate-100 text-sm">
             <thead class="bg-slate-50 text-left text-xs font-semibold uppercase text-slate-500">
-                <tr><th class="px-4 py-3">City</th><th class="px-4 py-3">Localities</th><th class="px-4 py-3">Properties</th><th class="px-4 py-3">Popular</th><th class="px-4 py-3 text-right">Actions</th></tr>
+                <tr><th class="px-4 py-3">City</th><th class="px-4 py-3">District</th><th class="px-4 py-3">Localities</th><th class="px-4 py-3">Properties</th><th class="px-4 py-3">Popular</th><th class="px-4 py-3 text-right">Actions</th></tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
                 @foreach ($cities as $city)
                     <tr>
                         <td class="px-4 py-3 font-semibold text-slate-800">{{ $city->name }} <span class="text-xs text-slate-400">{{ $city->state }}</span></td>
+                        <td class="px-4 py-3 text-slate-600">{{ $city->district }}</td>
                         <td class="px-4 py-3 text-slate-600">{{ $city->localities_count }}</td>
                         <td class="px-4 py-3 text-slate-600">{{ $city->properties_count }}</td>
                         <td class="px-4 py-3">
@@ -60,5 +65,9 @@
                 @endforeach
             </tbody>
         </table>
+    </div>
+
+    <div class="mt-4">
+        {{ $cities->links() }}
     </div>
 </x-layouts.admin>

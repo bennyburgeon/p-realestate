@@ -21,8 +21,12 @@
         <label class="text-xs font-bold uppercase tracking-wide text-slate-500" for="city-{{ $suffix }}">City</label>
         <select id="city-{{ $suffix }}" name="city" class="mt-1.5 w-full rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
             <option value="">Any City</option>
-            @foreach ($cities as $city)
-                <option value="{{ $city->slug }}" @selected(($filters['city'] ?? null) === $city->slug)>{{ $city->name }}</option>
+            @foreach ($cities->groupBy(fn ($city) => $city->district ?? 'Other') as $district => $districtCities)
+                <optgroup label="{{ $district }}">
+                    @foreach ($districtCities as $city)
+                        <option value="{{ $city->slug }}" @selected(($filters['city'] ?? null) === $city->slug)>{{ $city->name }}</option>
+                    @endforeach
+                </optgroup>
             @endforeach
         </select>
     </div>

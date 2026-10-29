@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             PropertyCategorySeeder::class,
             AmenitySeeder::class,
             LocationSeeder::class,
+            KeralaLocalBodySeeder::class,
             DemoDataSeeder::class,
         ]);
     }

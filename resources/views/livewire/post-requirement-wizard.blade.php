@@ -95,8 +95,12 @@
                         <label class="text-sm font-semibold text-slate-700" for="city_id">City</label>
                         <select id="city_id" wire:model.live="city_id" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
                             <option value="">Select a city</option>
-                            @foreach ($cities as $city)
-                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                            @foreach ($cities->groupBy(fn ($city) => $city->district ?? 'Other') as $district => $districtCities)
+                                <optgroup label="{{ $district }}">
+                                    @foreach ($districtCities as $city)
+                                        <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                    @endforeach
+                                </optgroup>
                             @endforeach
                         </select>
                         <x-input-error :messages="$errors->get('city_id')" class="mt-1" />

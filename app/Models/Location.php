@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
-    'parent_id', 'type', 'name', 'slug', 'state', 'country',
+    'parent_id', 'type', 'name', 'slug', 'state', 'district', 'country',
     'pin_code', 'latitude', 'longitude', 'is_popular',
 ])]
 class Location extends Model

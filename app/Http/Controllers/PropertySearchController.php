@@ -30,7 +30,7 @@ class PropertySearchController extends Controller
             'properties' => $properties,
             'filters' => $filters,
             'categories' => PropertyCategory::orderBy('sort_order')->get(),
-            'cities' => Location::where('type', Location::TYPE_CITY)->orderBy('name')->get(),
+            'cities' => Location::where('type', Location::TYPE_CITY)->orderByRaw('district is null')->orderBy('district')->orderBy('name')->get(),
         ]);
     }
 }
