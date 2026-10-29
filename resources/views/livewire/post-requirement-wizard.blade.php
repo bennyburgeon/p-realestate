@@ -91,14 +91,21 @@
             {{-- Step 3: Location --}}
             @if ($step === 3)
                 <div class="space-y-5">
-                    <div>
+                    <div wire:ignore x-data x-init="
+                        let select2City = $(document.getElementById('city_id')).select2({
+                            width: '100%',
+                            placeholder: 'Search for a city&hellip;',
+                            allowClear: true,
+                        });
+                        select2City.on('change', (event) => $wire.set('city_id', event.target.value));
+                    ">
                         <label class="text-sm font-semibold text-slate-700" for="city_id">City</label>
-                        <select id="city_id" wire:model.live="city_id" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                            <option value="">Select a city</option>
+                        <select id="city_id" class="mt-1.5 w-full">
+                            <option value=""></option>
                             @foreach ($cities->groupBy(fn ($city) => $city->district ?? 'Other') as $district => $districtCities)
                                 <optgroup label="{{ $district }}">
                                     @foreach ($districtCities as $city)
-                                        <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                        <option value="{{ $city->id }}" @selected($city_id === $city->id)>{{ $city->name }}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
