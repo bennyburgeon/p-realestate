@@ -13,6 +13,7 @@ use App\Models\Status;
 use App\Services\PropertyMatchingService;
 use App\Services\PropertyService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PropertyController extends Controller
@@ -57,7 +58,7 @@ class PropertyController extends Controller
 
         return view('marketplace.properties.create', [
             'categories' => PropertyCategory::orderBy('sort_order')->get(),
-            'localities' => Location::where('type', Location::TYPE_LOCALITY)->orderBy('name')->get(),
+            'selectedLocation' => $this->selectedLocation(old('location_id')),
             'amenities' => Amenity::orderBy('sort_order')->get(),
         ]);
     }
@@ -78,9 +79,17 @@ class PropertyController extends Controller
         return view('marketplace.properties.edit', [
             'property' => $property->load('amenities'),
             'categories' => PropertyCategory::orderBy('sort_order')->get(),
-            'localities' => Location::where('type', Location::TYPE_LOCALITY)->orderBy('name')->get(),
+            'selectedLocation' => $this->selectedLocation(old('location_id', $property->location_id)),
             'amenities' => Amenity::orderBy('sort_order')->get(),
         ]);
+    }
+
+    /**
+     * The location to pre-select in the form's searchable (AJAX) location picker.
+     */
+    private function selectedLocation(?string $locationId): ?Location
+    {
+        return $locationId ? Location::with('parent')->find($locationId) : null;
     }
 
     public function update(PropertyUpdateRequest $request, Property $property): RedirectResponse
@@ -123,7 +132,7 @@ class PropertyController extends Controller
         return view('marketplace.properties.sell', ['property' => $property]);
     }
 
-    public function mine(\Illuminate\Http\Request $request): View
+    public function mine(Request $request): View
     {
         $tab = $request->string('tab', 'all')->value();
 

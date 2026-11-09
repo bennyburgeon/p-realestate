@@ -19,16 +19,26 @@
 
     <div>
         <label class="text-xs font-bold uppercase tracking-wide text-slate-500" for="city-{{ $suffix }}">City</label>
-        <select id="city-{{ $suffix }}" name="city" class="mt-1.5 w-full rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-            <option value="">Any City</option>
-            @foreach ($cities->groupBy(fn ($city) => $city->district ?? 'Other') as $district => $districtCities)
+        <x-select id="city-{{ $suffix }}" name="city" class="text-sm" placeholder="Any City">
+            @foreach ($cities->groupBy(fn ($city) => $city->district ?? 'Other cities') as $district => $districtCities)
                 <optgroup label="{{ $district }}">
                     @foreach ($districtCities as $city)
                         <option value="{{ $city->slug }}" @selected(($filters['city'] ?? null) === $city->slug)>{{ $city->name }}</option>
                     @endforeach
                 </optgroup>
             @endforeach
-        </select>
+        </x-select>
+    </div>
+
+    <div>
+        <label class="text-xs font-bold uppercase tracking-wide text-slate-500" for="locality-{{ $suffix }}">Locality</label>
+        <x-select id="locality-{{ $suffix }}" name="locality" class="text-sm" placeholder="Any Locality"
+                  :ajax-url="route('locations.options')" :ajax-params="['type' => 'locality', 'key' => 'slug']"
+                  depends-on="#city-{{ $suffix }}" no-results="No localities listed for this city">
+            @if ($selectedLocality)
+                <option value="{{ $selectedLocality->slug }}" selected>{{ $selectedLocality->name }}</option>
+            @endif
+        </x-select>
     </div>
 
     <div>
@@ -45,12 +55,11 @@
 
     <div>
         <label class="text-xs font-bold uppercase tracking-wide text-slate-500" for="category-{{ $suffix }}">Property Type</label>
-        <select id="category-{{ $suffix }}" name="category" class="mt-1.5 w-full rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-            <option value="">Any Type</option>
+        <x-select id="category-{{ $suffix }}" name="category" class="text-sm" placeholder="Any Type">
             @foreach ($categories as $category)
                 <option value="{{ $category->slug }}" @selected(($filters['category'] ?? null) === $category->slug)>{{ $category->name }}</option>
             @endforeach
-        </select>
+        </x-select>
     </div>
 
     <div>
@@ -95,12 +104,11 @@
 
     <div>
         <label class="text-xs font-bold uppercase tracking-wide text-slate-500" for="furnishing-{{ $suffix }}">Furnishing</label>
-        <select id="furnishing-{{ $suffix }}" name="furnishing" class="mt-1.5 w-full rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-            <option value="">Any</option>
+        <x-select id="furnishing-{{ $suffix }}" name="furnishing" class="text-sm" placeholder="Any">
             <option value="unfurnished" @selected(($filters['furnishing'] ?? null) === 'unfurnished')>Unfurnished</option>
             <option value="semi_furnished" @selected(($filters['furnishing'] ?? null) === 'semi_furnished')>Semi Furnished</option>
             <option value="furnished" @selected(($filters['furnishing'] ?? null) === 'furnished')>Furnished</option>
-        </select>
+        </x-select>
     </div>
 
     <label class="flex items-center gap-2 text-sm font-medium text-slate-700">

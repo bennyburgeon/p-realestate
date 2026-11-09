@@ -92,7 +92,7 @@
 
         {{-- Mark sold modal --}}
         <div x-show="showSold" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-            <div class="w-full max-w-md rounded-2xl bg-white p-6" @click.outside="showSold = false">
+            <div class="w-full max-w-md rounded-2xl bg-white p-6" role="dialog" aria-modal="true" @click.outside="showSold = false">
                 <h3 class="font-bold text-slate-900">Mark this property as sold?</h3>
                 <p class="mt-1 text-sm text-slate-500">This will stop new enquiries and remove it from active results.</p>
                 <form method="POST" action="{{ route('admin.properties.mark-sold', $property) }}" class="mt-4 space-y-3">
@@ -102,12 +102,12 @@
                         <input type="number" name="sold_price" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
                     </div>
                     <div>
-                        <label class="text-sm font-semibold text-slate-700">Buyer source</label>
-                        <select name="buyer_source" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
+                        <label class="text-sm font-semibold text-slate-700" for="buyer_source">Buyer source</label>
+                        <x-select id="buyer_source" name="buyer_source">
                             <option value="platform_enquiry">Platform enquiry</option>
                             <option value="external">External</option>
                             <option value="other">Other</option>
-                        </select>
+                        </x-select>
                     </div>
                     <div class="flex justify-end gap-2">
                         <button type="button" @click="showSold = false" class="rounded-lg px-4 py-2 text-sm font-semibold text-slate-600">Cancel</button>

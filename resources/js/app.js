@@ -12,3 +12,9 @@ import select2 from 'select2';
 select2(window, $);
 
 import 'select2/dist/css/select2.min.css';
+import '../css/select2.css';
+
+// One shared initialiser for every <select data-searchable-select> (see <x-select>).
+import { bootSelect2 } from './select2';
+
+bootSelect2();

@@ -1,11 +1,10 @@
 <x-layouts.admin title="Enquiries">
     <form method="GET" class="mb-4 flex gap-2">
-        <select name="status" onchange="this.form.submit()" class="rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-            <option value="">All Statuses</option>
+        <x-select name="status" onchange="this.form.submit()" class="text-sm" wrapper-class="w-48" placeholder="All Statuses" aria-label="Filter by status">
             @foreach ($statuses as $status)
                 <option value="{{ $status->id }}" @selected(request('status') == $status->id)>{{ $status->label }}</option>
             @endforeach
-        </select>
+        </x-select>
     </form>
 
     <div class="overflow-x-auto rounded-2xl border border-slate-100 bg-white">
@@ -31,11 +30,11 @@
                         <td class="px-4 py-3 text-right">
                             <form method="POST" action="{{ route('admin.enquiries.status', $enquiry) }}" class="flex justify-end gap-1.5">
                                 @csrf
-                                <select name="status_id" onchange="this.form.submit()" class="rounded-lg border-slate-200 text-xs focus:border-emerald-500 focus:ring-emerald-500">
+                                <x-select name="status_id" onchange="this.form.submit()" class="text-xs" wrapper-class="w-40 text-left" aria-label="Enquiry status">
                                     @foreach ($statuses as $status)
                                         <option value="{{ $status->id }}" @selected($enquiry->status_id === $status->id)>{{ $status->label }}</option>
                                     @endforeach
-                                </select>
+                                </x-select>
                             </form>
                         </td>
                     </tr>

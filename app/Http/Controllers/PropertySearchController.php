@@ -30,7 +30,27 @@ class PropertySearchController extends Controller
             'properties' => $properties,
             'filters' => $filters,
             'categories' => PropertyCategory::orderBy('sort_order')->get(),
-            'cities' => Location::where('type', Location::TYPE_CITY)->orderByRaw('district is null')->orderBy('district')->orderBy('name')->get(),
+            'cities' => Location::query()->cities()->orderedForPicker()->get(),
+            'selectedLocality' => $this->selectedLocality($filters),
         ]);
+    }
+
+    /**
+     * Resolve the active locality filter (a slug, scoped to the city filter when present)
+     * so the locality picker can render it as the selected option.
+     *
+     * @param  array<string, mixed>  $filters
+     */
+    private function selectedLocality(array $filters): ?Location
+    {
+        if (empty($filters['locality'])) {
+            return null;
+        }
+
+        return Location::query()
+            ->where('type', Location::TYPE_LOCALITY)
+            ->where('slug', $filters['locality'])
+            ->when(! empty($filters['city']), fn ($query) => $query->whereHas('parent', fn ($parent) => $parent->where('slug', $filters['city'])))
+            ->first();
     }
 }

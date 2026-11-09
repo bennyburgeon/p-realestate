@@ -38,7 +38,8 @@ class UserController extends Controller
 
     public function toggleActive(User $user): RedirectResponse
     {
-        $user->update(['is_active' => ! $user->is_active]);
+        // is_active is deliberately not mass assignable, so set it explicitly.
+        $user->forceFill(['is_active' => ! $user->is_active])->save();
 
         return back()->with('status', $user->is_active ? 'User activated.' : 'User suspended.');
     }

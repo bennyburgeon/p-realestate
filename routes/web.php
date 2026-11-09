@@ -19,6 +19,7 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')
 Route::get('/properties', PropertySearchController::class)->name('properties.index');
 
 Route::get('/locations/search', [LocationSearchController::class, 'index'])->name('locations.search');
+Route::get('/locations/options', [LocationSearchController::class, 'options'])->name('locations.options');
 
 Route::middleware('auth')->group(function () {
     Route::get('/properties/create', [PropertyController::class, 'create'])->name('properties.create');

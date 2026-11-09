@@ -1,11 +1,10 @@
 <x-layouts.admin title="Property Requirements">
     <form method="GET" class="mb-4 flex gap-2">
-        <select name="status" onchange="this.form.submit()" class="rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-            <option value="">All Statuses</option>
+        <x-select name="status" onchange="this.form.submit()" class="text-sm" wrapper-class="w-48" placeholder="All Statuses" aria-label="Filter by status">
             @foreach ($statuses as $status)
                 <option value="{{ $status->id }}" @selected(request('status') == $status->id)>{{ $status->label }}</option>
             @endforeach
-        </select>
+        </x-select>
     </form>
 
     <div class="overflow-x-auto rounded-2xl border border-slate-100 bg-white">

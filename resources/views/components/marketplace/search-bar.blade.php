@@ -16,7 +16,7 @@
         },
         select(item) {
             this.query = item.display;
-            this.citySlug = item.type === 'city' ? item.slug : '';
+            this.citySlug = item.type === 'city' ? item.slug : (item.parent_slug || '');
             this.localitySlug = item.type === 'locality' ? item.slug : '';
             this.open = false;
         },
@@ -60,29 +60,26 @@
         </div>
 
         <div class="lg:col-span-3">
-            <select name="category" class="h-full w-full rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
-                <option value="">Property Type</option>
+            <x-select name="category" class="text-sm" size="lg" accent="primary" wrapper-class="" placeholder="Property Type" aria-label="Property type">
                 @foreach ($categories as $category)
                     <option value="{{ $category->slug }}">{{ $category->name }}</option>
                 @endforeach
-            </select>
+            </x-select>
         </div>
 
         <div class="grid grid-cols-2 gap-2 lg:col-span-3">
-            <select name="price_min" class="w-full rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
-                <option value="">Min &#8377;</option>
+            <x-select name="price_min" class="text-sm" size="lg" accent="primary" wrapper-class="" placeholder="Min ₹" :searchable="false" aria-label="Minimum price">
                 <option value="1000000">&#8377;10L</option>
                 <option value="2500000">&#8377;25L</option>
                 <option value="5000000">&#8377;50L</option>
                 <option value="10000000">&#8377;1Cr</option>
-            </select>
-            <select name="price_max" class="w-full rounded-xl border-slate-200 text-sm focus:border-primary-500 focus:ring-primary-500">
-                <option value="">Max &#8377;</option>
+            </x-select>
+            <x-select name="price_max" class="text-sm" size="lg" accent="primary" wrapper-class="" placeholder="Max ₹" :searchable="false" aria-label="Maximum price">
                 <option value="2500000">&#8377;25L</option>
                 <option value="5000000">&#8377;50L</option>
                 <option value="10000000">&#8377;1Cr</option>
                 <option value="25000000">&#8377;2.5Cr</option>
-            </select>
+            </x-select>
         </div>
 
         <button type="submit" class="flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-primary-700 lg:col-span-2">

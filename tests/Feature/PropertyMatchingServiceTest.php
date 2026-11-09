@@ -100,3 +100,45 @@ it('does not match a rental property against a buy requirement', function () {
 
     expect($match)->toBeNull();
 });
+
+it('matches a property in a neighbouring local body chosen as a preferred area', function () {
+    $propertyService = app(PropertyService::class);
+    $neighbour = Location::create(['type' => 'city', 'name' => 'Neighbourtown', 'slug' => 'neighbourtown']);
+
+    $property = $propertyService->create($this->owner, [
+        'title' => 'Apartment In The Neighbouring Town',
+        'listing_type' => 'sale',
+        'property_category_id' => $this->category->id,
+        'location_id' => $neighbour->id,
+        'price' => 5000000,
+        'built_up_area' => 1000,
+        'bedrooms' => 2,
+        'address' => '3 Match Lane',
+        'contact_phone' => '9111111115',
+    ]);
+    $propertyService->submitForReview($property);
+    $propertyService->approve($property);
+
+    $requirementData = [
+        'title' => 'Looking for a 2BHK apartment to buy nearby',
+        'intent' => 'buy',
+        'property_nature' => 'residential',
+        'property_category_id' => $this->category->id,
+        'city_id' => $this->city->id,
+        'budget_min' => 4000000,
+        'budget_max' => 6000000,
+        'bedrooms' => 2,
+        'contact_name' => $this->buyer->name,
+        'contact_phone' => '9111111116',
+    ];
+
+    $requirementService = app(PropertyRequirementService::class);
+    $withoutPreference = $requirementService->create($this->buyer, $requirementData);
+    $withPreference = $requirementService->create($this->buyer, [...$requirementData, 'preferred_locality_ids' => [$neighbour->id]]);
+
+    $scoreFor = fn ($requirement) => (float) PropertyMatch::where('property_requirement_id', $requirement->id)
+        ->where('property_id', $property->id)
+        ->value('score');
+
+    expect($scoreFor($withPreference) - $scoreFor($withoutPreference))->toEqual(25.0);
+});

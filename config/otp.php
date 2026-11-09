@@ -30,4 +30,7 @@ return [
 
     'verify_window_seconds' => env('OTP_VERIFY_WINDOW_SECONDS', 600),
 
+    // Minimum gap between two sends to the same account (matches the UI resend timer).
+    'resend_cooldown_seconds' => env('OTP_RESEND_COOLDOWN_SECONDS', 30),
+
 ];

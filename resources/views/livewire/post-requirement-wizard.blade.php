@@ -70,18 +70,17 @@
 
                     <div>
                         <label class="text-sm font-semibold text-slate-700" for="property_category_id">Category</label>
-                        <select id="property_category_id" wire:model="property_category_id" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                            <option value="">Select a category</option>
+                        <x-select id="property_category_id" wire:model="property_category_id" placeholder="Select a category">
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach
-                        </select>
+                        </x-select>
                         <x-input-error :messages="$errors->get('property_category_id')" class="mt-1" />
                     </div>
 
                     <div>
                         <label class="text-sm font-semibold text-slate-700" for="title">Requirement title</label>
-                        <input type="text" id="title" wire:model="title" placeholder="e.g. 2 BHK apartment for rent near Koramangala"
+                        <input type="text" id="title" wire:model="title" placeholder="e.g. 2 BHK apartment for rent near my office"
                                class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
                         <x-input-error :messages="$errors->get('title')" class="mt-1" />
                     </div>
@@ -91,39 +90,43 @@
             {{-- Step 3: Location --}}
             @if ($step === 3)
                 <div class="space-y-5">
-                    <div wire:ignore x-data x-init="
-                        let select2City = $(document.getElementById('city_id')).select2({
-                            width: '100%',
-                            placeholder: 'Search for a city&hellip;',
-                            allowClear: true,
-                        });
-                        select2City.on('change', (event) => $wire.set('city_id', event.target.value));
-                    ">
-                        <label class="text-sm font-semibold text-slate-700" for="city_id">City</label>
-                        <select id="city_id" class="mt-1.5 w-full">
-                            <option value=""></option>
-                            @foreach ($cities->groupBy(fn ($city) => $city->district ?? 'Other') as $district => $districtCities)
+                    <div>
+                        <label class="text-sm font-semibold text-slate-700" for="city_id">City / local body</label>
+                        <x-select id="city_id" wire:model.live="city_id" placeholder="Search for a city or local body">
+                            @foreach ($cities->groupBy(fn ($city) => $city->district ?? 'Other cities') as $district => $districtCities)
                                 <optgroup label="{{ $district }}">
                                     @foreach ($districtCities as $city)
-                                        <option value="{{ $city->id }}" @selected($city_id === $city->id)>{{ $city->name }}</option>
+                                        <option value="{{ $city->id }}">{{ $city->name }}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
-                        </select>
+                        </x-select>
                         <x-input-error :messages="$errors->get('city_id')" class="mt-1" />
                     </div>
+
                     <div>
-                        <label class="text-sm font-semibold text-slate-700">Preferred areas</label>
-                        <div class="mt-1.5 max-h-40 space-y-1 overflow-y-auto rounded-lg border border-slate-200 p-2">
-                            @forelse ($localities as $locality)
-                                <label class="flex items-center gap-2 rounded px-1.5 py-1 text-sm text-slate-600 hover:bg-slate-50">
-                                    <input type="checkbox" wire:model="preferred_locality_ids" value="{{ $locality->id }}" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
-                                    {{ $locality->name }}
-                                </label>
-                            @empty
-                                <p class="px-1.5 py-1 text-xs text-slate-400">Select a city to see areas</p>
-                            @endforelse
-                        </div>
+                        <label class="text-sm font-semibold text-slate-700" for="preferred_locality_ids">Preferred areas <span class="font-normal text-slate-400">(optional)</span></label>
+                        @if (! $city_id)
+                            <x-select id="preferred_locality_ids" multiple disabled placeholder="Select a city first" wire:key="preferred-areas-empty" />
+                        @elseif ($preferredAreas->isEmpty())
+                            <p class="mt-1.5 rounded-lg border border-dashed border-slate-200 px-3 py-2.5 text-sm text-slate-500">
+                                No areas are listed for {{ $cities->firstWhere('id', $city_id)?->name ?? 'this city' }} yet &mdash; we'll match you with listings anywhere in the city.
+                            </p>
+                        @else
+                            <x-select id="preferred_locality_ids" wire:model="preferred_locality_ids" wire:key="preferred-areas-{{ $city_id }}" multiple
+                                      placeholder="Search and add areas" no-results="No matching areas">
+                                @php $selectedCity = $cities->firstWhere('id', $city_id); @endphp
+                                @foreach ($preferredAreas->groupBy(fn ($area) => $area->parent_id === $city_id ? 'Areas in '.$selectedCity?->name : 'Elsewhere in '.$selectedCity?->district.' district') as $group => $areas)
+                                    <optgroup label="{{ $group }}">
+                                        @foreach ($areas as $area)
+                                            <option value="{{ $area->id }}">{{ $area->name }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </x-select>
+                            <p class="mt-1 text-xs text-slate-400">Pick one or more areas you'd like to live or work in. Leave empty to consider the whole city.</p>
+                        @endif
+                        <x-input-error :messages="array_merge($errors->get('preferred_locality_ids'), collect($errors->get('preferred_locality_ids.*'))->flatten()->all())" class="mt-1" />
                     </div>
                 </div>
             @endif
@@ -165,32 +168,29 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Bedrooms</label>
-                            <select wire:model="bedrooms" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                                <option value="">Any</option>
+                            <x-select wire:model="bedrooms" placeholder="Any">
                                 @foreach ([1, 2, 3, 4, 5] as $n)
                                     <option value="{{ $n }}">{{ $n }}+</option>
                                 @endforeach
-                            </select>
+                            </x-select>
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Bathrooms</label>
-                            <select wire:model="bathrooms" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                                <option value="">Any</option>
+                            <x-select wire:model="bathrooms" placeholder="Any">
                                 @foreach ([1, 2, 3, 4] as $n)
                                     <option value="{{ $n }}">{{ $n }}+</option>
                                 @endforeach
-                            </select>
+                            </x-select>
                         </div>
                     </div>
 
                     <div>
                         <label class="text-sm font-semibold text-slate-700">Furnishing</label>
-                        <select wire:model="furnishing_status" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                            <option value="">Any</option>
+                        <x-select wire:model="furnishing_status" placeholder="Any">
                             <option value="unfurnished">Unfurnished</option>
                             <option value="semi_furnished">Semi Furnished</option>
                             <option value="furnished">Furnished</option>
-                        </select>
+                        </x-select>
                     </div>
 
                     <button type="button" wire:click="$toggle('showAdvanced')" class="flex items-center gap-1.5 text-sm font-bold text-emerald-700">
@@ -219,21 +219,19 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="text-sm font-semibold text-slate-700">Property age</label>
-                                    <select wire:model="property_age" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                                        <option value="">Any</option>
+                                    <x-select wire:model="property_age" placeholder="Any">
                                         <option value="new">New / Under Construction</option>
                                         <option value="0-5">0-5 years</option>
                                         <option value="5-10">5-10 years</option>
                                         <option value="10+">10+ years</option>
-                                    </select>
+                                    </x-select>
                                 </div>
                                 <div>
                                     <label class="text-sm font-semibold text-slate-700">Possession</label>
-                                    <select wire:model="possession_requirement" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                                        <option value="">Any</option>
+                                    <x-select wire:model="possession_requirement" placeholder="Any">
                                         <option value="ready_to_move">Ready to Move</option>
                                         <option value="under_construction">Under Construction</option>
-                                    </select>
+                                    </x-select>
                                 </div>
                             </div>
 
@@ -292,11 +290,11 @@
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Preferred contact method</label>
-                            <select wire:model="preferred_contact_method" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
+                            <x-select wire:model="preferred_contact_method">
                                 <option value="phone">Phone Call</option>
                                 <option value="whatsapp">WhatsApp</option>
                                 <option value="email">Email</option>
-                            </select>
+                            </x-select>
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-slate-700">Preferred time</label>
@@ -326,6 +324,9 @@
                             <button type="button" wire:click="goToStep(3)" class="text-xs font-semibold text-emerald-700 hover:underline">Edit</button>
                         </div>
                         <p class="mt-2 text-sm text-slate-600">{{ $cities->firstWhere('id', $city_id)?->name ?? 'Any city' }}</p>
+                        @if ($preferredAreas->whereIn('id', $preferred_locality_ids)->isNotEmpty())
+                            <p class="text-sm text-slate-500">Preferred: {{ $preferredAreas->whereIn('id', $preferred_locality_ids)->pluck('name')->join(', ') }}</p>
+                        @endif
                     </div>
 
                     <div class="rounded-xl bg-slate-50 p-4">

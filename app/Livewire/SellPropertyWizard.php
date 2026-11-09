@@ -160,9 +160,23 @@ class SellPropertyWizard extends Component
         return PropertyCategory::where('nature', $this->property_nature)->orderBy('sort_order')->get();
     }
 
-    public function cities(): Collection
+    /**
+     * The currently chosen city/locality, rendered as the picker's selected option
+     * (other options are searched on demand via the locations.options endpoint).
+     */
+    public function selectedLocation(): ?Location
     {
-        return Location::where('type', Location::TYPE_CITY)->orderByRaw('district is null')->orderBy('district')->orderBy('name')->get();
+        return $this->location_id ? Location::with('parent')->find($this->location_id) : null;
+    }
+
+    /**
+     * Property types are scoped to the nature; drop a type that no longer applies.
+     */
+    public function updatedPropertyNature(): void
+    {
+        if ($this->property_category_id && ! $this->categories()->contains('id', $this->property_category_id)) {
+            $this->property_category_id = null;
+        }
     }
 
     public function amenities(): Collection
@@ -414,7 +428,7 @@ class SellPropertyWizard extends Component
     {
         return view('livewire.sell-property-wizard', [
             'categories' => $this->categories(),
-            'cities' => $this->cities(),
+            'selectedLocation' => $this->selectedLocation(),
             'amenitiesList' => $this->amenities(),
         ]);
     }

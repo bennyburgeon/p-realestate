@@ -121,3 +121,21 @@ it('does not show unapproved properties in search results', function () {
         ->assertOk()
         ->assertDontSee('Hidden Draft Apartment');
 });
+
+it('pre-selects a city location on the property edit form', function () {
+    $owner = makeOwner();
+    $property = app(PropertyService::class)->create($owner, [
+        'title' => 'Apartment Placed In A City',
+        'listing_type' => 'sale',
+        'property_category_id' => $this->category->id,
+        'location_id' => $this->location->id,
+        'price' => 5000000,
+        'address' => '1 Edit Lane',
+        'contact_phone' => '9333333333',
+    ]);
+
+    $this->actingAs($owner)
+        ->get(route('properties.edit', $property))
+        ->assertOk()
+        ->assertSee('<option value="'.$this->location->id.'" selected>Testville</option>', escape: false);
+});

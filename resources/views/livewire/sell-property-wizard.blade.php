@@ -64,12 +64,11 @@
 
                 <div>
                     <label class="text-sm font-semibold text-slate-700" for="property_category_id">Property type</label>
-                    <select id="property_category_id" wire:model="property_category_id" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-primary-500 focus:ring-primary-500">
-                        <option value="">Select a property type</option>
+                    <x-select id="property_category_id" wire:model="property_category_id" placeholder="Select a property type" accent="primary">
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
-                    </select>
+                    </x-select>
                     <x-input-error :messages="$errors->get('property_category_id')" class="mt-1" />
                 </div>
             </div>
@@ -80,16 +79,15 @@
             <div class="space-y-5">
                 <div>
                     <label class="text-sm font-semibold text-slate-700" for="location_id">City / Locality</label>
-                    <select id="location_id" wire:model="location_id" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-primary-500 focus:ring-primary-500">
-                        <option value="">Select a city</option>
-                        @foreach ($cities->groupBy(fn ($city) => $city->district ?? 'Other') as $district => $districtCities)
-                            <optgroup label="{{ $district }}">
-                                @foreach ($districtCities as $city)
-                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                @endforeach
-                            </optgroup>
-                        @endforeach
-                    </select>
+                    <x-select id="location_id" wire:model.live="location_id" placeholder="Search for a city, locality or local body" accent="primary"
+                              :ajax-url="route('locations.options')" no-results="No matching location">
+                        @if ($selectedLocation)
+                            <option value="{{ $selectedLocation->id }}" selected>{{ $selectedLocation->displayName() }}</option>
+                        @endif
+                    </x-select>
+                    @if ($selectedLocation?->regionLabel())
+                        <p class="mt-1 text-xs text-slate-400">{{ $selectedLocation->regionLabel() }}</p>
+                    @endif
                     <x-input-error :messages="$errors->get('location_id')" class="mt-1" />
                 </div>
 
@@ -168,12 +166,11 @@
 
                     <div>
                         <label class="text-sm font-semibold text-slate-700">Furnishing</label>
-                        <select wire:model="furnishing_status" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-primary-500 focus:ring-primary-500">
-                            <option value="">Select</option>
+                        <x-select wire:model="furnishing_status" placeholder="Select" accent="primary">
                             <option value="unfurnished">Unfurnished</option>
                             <option value="semi_furnished">Semi Furnished</option>
                             <option value="furnished">Furnished</option>
-                        </select>
+                        </x-select>
                     </div>
                 @endif
 
@@ -211,11 +208,10 @@
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label class="text-sm font-semibold text-slate-700">Possession</label>
-                        <select wire:model="possession_status" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-primary-500 focus:ring-primary-500">
-                            <option value="">Select</option>
+                        <x-select wire:model="possession_status" placeholder="Select" accent="primary">
                             <option value="ready_to_move">Ready to Move</option>
                             <option value="under_construction">Under Construction</option>
-                        </select>
+                        </x-select>
                     </div>
                     <div>
                         <label class="text-sm font-semibold text-slate-700">Availability date</label>
@@ -357,11 +353,11 @@
 
                 <div>
                     <label class="text-sm font-semibold text-slate-700">Preferred contact method</label>
-                    <select wire:model="contact_preference" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-primary-500 focus:ring-primary-500">
+                    <x-select wire:model="contact_preference" accent="primary">
                         <option value="phone">Phone Call</option>
                         <option value="whatsapp">WhatsApp</option>
                         <option value="email">Email</option>
-                    </select>
+                    </x-select>
                 </div>
 
                 <label class="flex items-center gap-2 text-sm font-semibold text-slate-700">
@@ -432,7 +428,7 @@
                         @endif
                     </p>
                     <p class="text-slate-600">{{ $title }}</p>
-                    <p class="text-sm text-slate-500">📍 {{ $address }}</p>
+                    <p class="text-sm text-slate-500">📍 {{ collect([$address, $selectedLocation?->displayName()])->filter()->join(', ') }}</p>
                 </div>
 
                 <div class="flex flex-wrap gap-4 text-sm text-slate-600">

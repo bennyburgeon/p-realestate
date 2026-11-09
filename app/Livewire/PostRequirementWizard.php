@@ -8,6 +8,7 @@ use App\Models\PropertyCategory;
 use App\Models\PropertyRequirement;
 use App\Services\PropertyRequirementService;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class PostRequirementWizard extends Component
@@ -94,13 +95,14 @@ class PostRequirementWizard extends Component
             $this->requirementId = $propertyRequirement->id;
             $this->fill($propertyRequirement->only([
                 'title', 'intent', 'property_nature', 'property_category_id', 'city_id',
-                'budget_min', 'budget_max', 'area_min', 'area_max', 'area_unit',
+                'budget_min', 'budget_max', 'area_min', 'area_max',
                 'bedrooms', 'bathrooms', 'furnishing_status',
                 'floor_preference', 'facing_preference', 'property_age', 'possession_requirement',
                 'move_in_date', 'special_requirements', 'additional_notes',
                 'contact_name', 'contact_email', 'contact_phone',
                 'preferred_contact_method', 'preferred_contact_time',
             ]));
+            $this->area_unit = $propertyRequirement->area_unit ?? $this->area_unit;
             $this->preferred_locality_ids = $propertyRequirement->preferred_locality_ids ?? [];
             $this->amenity_ids = $propertyRequirement->amenity_ids ?? [];
             $this->parking_required = (bool) $propertyRequirement->parking_required;
@@ -114,16 +116,40 @@ class PostRequirementWizard extends Component
 
     public function cities(): Collection
     {
-        return Location::where('type', Location::TYPE_CITY)->orderByRaw('district is null')->orderBy('district')->orderBy('name')->get();
+        return Location::query()->cities()->orderedForPicker()->get();
     }
 
-    public function localities(): Collection
+    /**
+     * Areas selectable as "preferred" for the chosen city (its localities, plus the
+     * neighbouring local bodies of the same district where the city has no localities).
+     */
+    public function preferredAreas(): Collection
     {
         if (! $this->city_id) {
             return collect();
         }
 
-        return Location::where('type', Location::TYPE_LOCALITY)->where('parent_id', $this->city_id)->orderBy('name')->get();
+        return Location::find($this->city_id)?->preferredAreaOptions() ?? collect();
+    }
+
+    /**
+     * Categories are scoped to the nature; drop a category that no longer applies.
+     */
+    public function updatedPropertyNature(): void
+    {
+        if ($this->property_category_id && ! $this->categories()->contains('id', $this->property_category_id)) {
+            $this->property_category_id = null;
+        }
+    }
+
+    /**
+     * Drop preferred areas that no longer belong to the newly chosen city.
+     */
+    public function updatedCityId(): void
+    {
+        $allowedIds = $this->preferredAreas()->modelKeys();
+
+        $this->preferred_locality_ids = array_values(array_intersect($this->preferred_locality_ids, $allowedIds));
     }
 
     public function amenities(): Collection
@@ -146,7 +172,9 @@ class PostRequirementWizard extends Component
                 'title' => ['required', 'string', 'min:10', 'max:150'],
             ],
             3 => [
-                'city_id' => ['required', 'exists:locations,id'],
+                'city_id' => ['required', Rule::exists('locations', 'id')->where('type', Location::TYPE_CITY)],
+                'preferred_locality_ids' => ['array'],
+                'preferred_locality_ids.*' => ['string', Rule::in($this->preferredAreas()->modelKeys())],
             ],
             4 => [
                 'budget_min' => ['nullable', 'numeric', 'min:0'],
@@ -272,7 +300,7 @@ class PostRequirementWizard extends Component
         return view('livewire.post-requirement-wizard', [
             'categories' => $this->categories(),
             'cities' => $this->cities(),
-            'localities' => $this->localities(),
+            'preferredAreas' => $this->preferredAreas(),
             'amenitiesList' => $this->amenities(),
         ]);
     }

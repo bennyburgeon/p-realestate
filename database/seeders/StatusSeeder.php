@@ -44,6 +44,10 @@ class StatusSeeder extends Seeder
             [Status::ENQUIRY_CONTACTED, 'enquiry', 'contacted', 'Contacted', 'amber'],
             [Status::ENQUIRY_CLOSED, 'enquiry', 'closed', 'Closed', 'gray'],
             [Status::ENQUIRY_VISIT_SCHEDULED, 'enquiry', 'visit_scheduled', 'Visit Scheduled', 'blue'],
+
+            // user
+            [Status::USER_INACTIVE, 'user', 'inactive', 'Inactive', 'gray'],
+            [Status::USER_ACTIVE, 'user', 'active', 'Active', 'green'],
         ];
 
         foreach ($statuses as $index => [$id, $group, $slug, $label, $color]) {

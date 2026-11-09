@@ -2,12 +2,11 @@
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
         <form method="GET" class="flex gap-2">
             <input type="text" name="keyword" value="{{ request('keyword') }}" placeholder="Search title..." class="rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-            <select name="status" onchange="this.form.submit()" class="rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-                <option value="">All Statuses</option>
+            <x-select name="status" onchange="this.form.submit()" class="text-sm" wrapper-class="w-48" placeholder="All Statuses" aria-label="Filter by status">
                 @foreach ($statuses as $status)
                     <option value="{{ $status->id }}" @selected(request('status') == $status->id)>{{ $status->label }}</option>
                 @endforeach
-            </select>
+            </x-select>
             <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Filter</button>
         </form>
     </div>

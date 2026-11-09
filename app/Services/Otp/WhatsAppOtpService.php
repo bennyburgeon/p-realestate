@@ -17,14 +17,17 @@ class WhatsAppOtpService extends AbstractOtpService
 {
     protected function generateCode(): string
     {
-        return (string) random_int(1000, 9999);
+        return str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
     }
 
-    protected function dispatch(string $phone, string $code): void
+    protected function dispatch(string $phone, string $code): bool
     {
         // TODO: replace with a real WhatsApp Business API call, e.g.:
         //   Http::withToken(config('services.whatsapp.token'))
         //       ->post(config('services.whatsapp.endpoint'), [...]);
-        Log::info("[WhatsAppOtpService] Would send OTP {$code} to +91{$phone} via WhatsApp.");
+        // Never log the code itself.
+        Log::info("[WhatsAppOtpService] Would send an OTP to +91{$phone} via WhatsApp.");
+
+        return true;
     }
 }

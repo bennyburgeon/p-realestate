@@ -1,7 +1,7 @@
 <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
-                <h1 class="text-2xl font-extrabold text-slate-900">Welcome back, {{ Str::before(auth()->user()->name, ' ') }}</h1>
+                <h1 class="text-2xl font-extrabold text-slate-900">Welcome back{{ auth()->user()->name ? ', '.Str::before(auth()->user()->name, ' ') : '' }}</h1>
                 <p class="mt-1 text-sm text-slate-500">Manage your listings, requirements and saved properties.</p>
             </div>
             <div class="flex gap-2">

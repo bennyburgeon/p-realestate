@@ -1,5 +1,5 @@
 <x-guest-layout title="Log In">
-    <div x-data="{ resendIn: 30 }" x-init="if (resendIn > 0) { const t = setInterval(() => { resendIn--; if (resendIn <= 0) clearInterval(t); }, 1000); }">
+    <div x-data="{ resendIn: {{ $phone ? $resendCooldownSeconds : 0 }} }" x-init="if (resendIn > 0) { const t = setInterval(() => { resendIn--; if (resendIn <= 0) clearInterval(t); }, 1000); }">
         <div class="text-center">
             <h1 class="font-display text-2xl font-bold text-primary-900">{{ $phone ? 'Enter your code' : 'Find your place. Start here.' }}</h1>
             <p class="mt-1.5 text-sm text-neutral-500">{{ $phone ? 'We sent a 4-digit code to your phone.' : 'No password needed — just your mobile number.' }}</p>
@@ -15,6 +15,8 @@
                     Code sent to <span class="font-semibold text-slate-900">+91 {{ $phone }}</span>
                     &mdash;
                     <a href="{{ route('login', ['reset' => 1]) }}" class="font-semibold text-primary-700 hover:underline">change number</a>
+                    <p class="mt-1 text-xs text-slate-400">The code is valid for {{ $expiresInMinutes }} minutes.</p>
+                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                 </div>
 
                 <div>
@@ -24,15 +26,6 @@
                            class="w-full rounded-xl border-slate-200 text-center text-2xl tracking-[0.75em] focus:border-primary-500 focus:ring-primary-500">
                     <x-input-error :messages="$errors->get('code')" class="mt-2 text-center" />
                 </div>
-
-                @if ($isNewUser)
-                    <div>
-                        <label for="name" class="text-sm font-semibold text-slate-700">Your name</label>
-                        <input type="text" id="name" name="name" placeholder="e.g. Akhil Benny"
-                               class="mt-1.5 w-full rounded-xl border-slate-200 focus:border-primary-500 focus:ring-primary-500">
-                        <x-input-error :messages="$errors->get('name')" class="mt-1" />
-                    </div>
-                @endif
 
                 <button type="submit"
                         class="w-full rounded-xl bg-primary-600 py-3 text-sm font-bold text-white shadow-sm shadow-primary-600/30 transition hover:bg-primary-700">

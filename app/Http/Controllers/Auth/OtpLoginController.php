@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Contracts\OtpServiceContract;
+use App\Exceptions\OtpDeliveryException;
 use App\Exceptions\OtpThrottledException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\SendOtpRequest;
 use App\Http\Requests\Auth\VerifyOtpRequest;
-use App\Models\User;
+use App\Services\PhoneOtpAuthenticationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -15,7 +15,7 @@ use Illuminate\View\View;
 
 class OtpLoginController extends Controller
 {
-    public function __construct(private readonly OtpServiceContract $otp) {}
+    public function __construct(private readonly PhoneOtpAuthenticationService $phoneLogin) {}
 
     /**
      * Display the mobile number / OTP login screen.
@@ -23,82 +23,52 @@ class OtpLoginController extends Controller
     public function create(): View
     {
         if (request()->boolean('reset')) {
-            session()->forget(['otp_phone', 'otp_is_new_user']);
+            session()->forget('otp_phone');
         }
 
-        $phone = session('otp_phone');
-
         return view('auth.otp-login', [
-            'phone' => $phone,
-            'isNewUser' => $phone ? session('otp_is_new_user', false) : false,
+            'phone' => session('otp_phone'),
+            'expiresInMinutes' => (int) ceil(config('otp.ttl_seconds') / 60),
+            'resendCooldownSeconds' => (int) config('otp.resend_cooldown_seconds'),
         ]);
     }
 
     /**
-     * Send (or resend) an OTP to the given mobile number.
+     * Create or find the user for this number, then send (or resend) an OTP.
+     * The response is the same whether or not the number already has an account.
      */
     public function sendOtp(SendOtpRequest $request): RedirectResponse
     {
         $phone = $request->string('phone')->value();
 
         try {
-            $this->otp->send($phone);
-        } catch (OtpThrottledException $e) {
-            throw ValidationException::withMessages([
-                'phone' => "Too many attempts. Please try again in {$e->retryAfterSeconds} seconds.",
-            ]);
+            $this->phoneLogin->initiate($phone, $request->ip());
+        } catch (OtpThrottledException|OtpDeliveryException $e) {
+            throw ValidationException::withMessages(['phone' => $e->getMessage()]);
         }
 
-        session([
-            'otp_phone' => $phone,
-            'otp_is_new_user' => ! User::where('phone', $phone)->exists(),
-        ]);
+        session(['otp_phone' => $phone]);
 
         return redirect()->route('login');
     }
 
     /**
-     * Verify the submitted OTP and log the user in, creating a new account
-     * if this is the first time we've seen this phone number.
+     * Verify the OTP against the database and only then log the user in.
      */
     public function verifyOtp(VerifyOtpRequest $request): RedirectResponse
     {
-        $phone = $request->string('phone')->value();
-
         try {
-            $verified = $this->otp->verify($phone, $request->string('code')->value());
+            ['user' => $user, 'isNewUser' => $isNewUser] = $this->phoneLogin->verify(
+                $request->string('phone')->value(),
+                $request->string('code')->value(),
+            );
         } catch (OtpThrottledException $e) {
-            throw ValidationException::withMessages([
-                'code' => "Too many attempts. Please try again in {$e->retryAfterSeconds} seconds.",
-            ]);
-        }
-
-        if (! $verified) {
-            throw ValidationException::withMessages([
-                'code' => 'The OTP is incorrect.',
-            ]);
-        }
-
-        $user = User::where('phone', $phone)->first();
-        $isNewUser = ! $user;
-
-        if (! $user) {
-            if (! $request->filled('name')) {
-                throw ValidationException::withMessages([
-                    'name' => 'Please tell us your name.',
-                ]);
-            }
-
-            $user = User::create([
-                'name' => $request->string('name')->value(),
-                'phone' => $phone,
-                'phone_verified_at' => now(),
-            ]);
+            throw ValidationException::withMessages(['code' => $e->getMessage()]);
         }
 
         Auth::login($user, remember: true);
 
-        $request->session()->forget(['otp_phone', 'otp_is_new_user']);
+        $request->session()->forget('otp_phone');
         $request->session()->regenerate();
 
         return $isNewUser

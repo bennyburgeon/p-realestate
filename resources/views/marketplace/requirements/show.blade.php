@@ -153,12 +153,11 @@
                 <h2 class="font-bold text-slate-900">Respond to This Requirement</h2>
                 <form method="POST" action="{{ route('requirements.respond', $requirement) }}" class="mt-3 space-y-3">
                     @csrf
-                    <select name="property_id" class="w-full rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
-                        <option value="">Link one of my properties (optional)</option>
-                        @foreach (auth()->user()->properties()->live()->get() as $ownProperty)
-                            <option value="{{ $ownProperty->id }}">{{ $ownProperty->title }}</option>
+                    <x-select name="property_id" class="text-sm" wrapper-class="" placeholder="Link one of my properties (optional)" aria-label="Link one of my properties">
+                        @foreach (auth()->user()->properties()->live()->with('location.parent')->get() as $ownProperty)
+                            <option value="{{ $ownProperty->id }}" @selected(old('property_id') === $ownProperty->id)>{{ $ownProperty->title }}@if ($ownProperty->location) &middot; {{ $ownProperty->location->displayName() }}@endif</option>
                         @endforeach
-                    </select>
+                    </x-select>
                     <textarea name="message" rows="3" required placeholder="Introduce yourself and how you can help..."
                               class="w-full rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500"></textarea>
                     <button type="submit" class="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-emerald-700">Send Response</button>

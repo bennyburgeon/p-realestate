@@ -2,6 +2,7 @@
 
 use App\Livewire\SellPropertyWizard;
 use App\Models\Location;
+use App\Models\Property;
 use App\Models\PropertyCategory;
 use App\Models\Status;
 use App\Models\User;
@@ -59,7 +60,7 @@ it('walks through all 8 steps and submits a property for review', function () {
         ->call('submit')
         ->assertRedirect();
 
-    $property = \App\Models\Property::where('title', 'Beautiful 3 BHK Villa For Sale')->first();
+    $property = Property::where('title', 'Beautiful 3 BHK Villa For Sale')->first();
 
     expect($property)->not->toBeNull()
         ->and($property->status_id)->toBe(Status::PROPERTY_PENDING_REVIEW)
@@ -79,4 +80,27 @@ it('requires at least 3 photos before continuing past the photos step', function
         ->set('photos', [UploadedFile::fake()->image('photo1.jpg')])
         ->call('nextStep')
         ->assertHasErrors('photos');
+});
+
+it('clears the property type when the nature changes to one it does not belong to', function () {
+    Livewire::actingAs($this->owner)
+        ->test(SellPropertyWizard::class)
+        ->set('property_category_id', $this->category->id)
+        ->set('property_nature', 'commercial')
+        ->assertSet('property_category_id', null);
+});
+
+it('accepts a locality as the property location and shows it with its city', function () {
+    $locality = Location::create(['type' => 'locality', 'name' => 'Wizard Heights', 'slug' => 'wizard-heights', 'parent_id' => $this->location->id]);
+
+    Livewire::actingAs($this->owner)
+        ->test(SellPropertyWizard::class)
+        ->set('property_category_id', $this->category->id)
+        ->call('nextStep')
+        ->set('location_id', $locality->id)
+        ->assertSee('Wizard Heights, Wizardville')
+        ->set('address', '9 Wizard Lane')
+        ->call('nextStep')
+        ->assertHasNoErrors()
+        ->assertSet('step', 3);
 });

@@ -15,34 +15,37 @@
             </div>
 
             <div>
-                <label class="text-sm font-semibold text-slate-700">Listing Type</label>
-                <select name="listing_type" required class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
+                <label class="text-sm font-semibold text-slate-700" for="listing_type">Listing Type</label>
+                <x-select id="listing_type" name="listing_type" required>
                     @foreach (['sale' => 'For Sale', 'rent' => 'For Rent', 'lease' => 'For Lease'] as $value => $label)
                         <option value="{{ $value }}" @selected($val('listing_type') === $value)>{{ $label }}</option>
                     @endforeach
-                </select>
+                </x-select>
                 <x-input-error :messages="$errors->get('listing_type')" class="mt-1" />
             </div>
 
             <div>
-                <label class="text-sm font-semibold text-slate-700">Category</label>
-                <select name="property_category_id" required class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                    <option value="">Select</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}" @selected($val('property_category_id') === $category->id)>{{ $category->name }}</option>
+                <label class="text-sm font-semibold text-slate-700" for="property_category_id">Category</label>
+                <x-select id="property_category_id" name="property_category_id" required placeholder="Select a category">
+                    @foreach ($categories->groupBy(fn ($category) => ucfirst($category->nature)) as $nature => $natureCategories)
+                        <optgroup label="{{ $nature }}">
+                            @foreach ($natureCategories as $category)
+                                <option value="{{ $category->id }}" @selected($val('property_category_id') === $category->id)>{{ $category->name }}</option>
+                            @endforeach
+                        </optgroup>
                     @endforeach
-                </select>
+                </x-select>
                 <x-input-error :messages="$errors->get('property_category_id')" class="mt-1" />
             </div>
 
             <div>
-                <label class="text-sm font-semibold text-slate-700">Locality</label>
-                <select name="location_id" required class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                    <option value="">Select</option>
-                    @foreach ($localities as $locality)
-                        <option value="{{ $locality->id }}" @selected($val('location_id') === $locality->id)>{{ $locality->displayName() }}</option>
-                    @endforeach
-                </select>
+                <label class="text-sm font-semibold text-slate-700" for="location_id">City / Locality</label>
+                <x-select id="location_id" name="location_id" required placeholder="Search for a city, locality or local body"
+                          :ajax-url="route('locations.options')" no-results="No matching location">
+                    @if ($selectedLocation)
+                        <option value="{{ $selectedLocation->id }}" selected>{{ $selectedLocation->displayName() }}</option>
+                    @endif
+                </x-select>
                 <x-input-error :messages="$errors->get('location_id')" class="mt-1" />
             </div>
 
@@ -108,21 +111,19 @@
                 </div>
             </div>
             <div>
-                <label class="text-sm font-semibold text-slate-700">Furnishing</label>
-                <select name="furnishing_status" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                    <option value="">Select</option>
+                <label class="text-sm font-semibold text-slate-700" for="furnishing_status">Furnishing</label>
+                <x-select id="furnishing_status" name="furnishing_status" placeholder="Select">
                     <option value="unfurnished" @selected($val('furnishing_status') === 'unfurnished')>Unfurnished</option>
                     <option value="semi_furnished" @selected($val('furnishing_status') === 'semi_furnished')>Semi Furnished</option>
                     <option value="furnished" @selected($val('furnishing_status') === 'furnished')>Furnished</option>
-                </select>
+                </x-select>
             </div>
             <div>
-                <label class="text-sm font-semibold text-slate-700">Possession</label>
-                <select name="possession_status" class="mt-1.5 w-full rounded-lg border-slate-200 focus:border-emerald-500 focus:ring-emerald-500">
-                    <option value="">Select</option>
+                <label class="text-sm font-semibold text-slate-700" for="possession_status">Possession</label>
+                <x-select id="possession_status" name="possession_status" placeholder="Select">
                     <option value="ready_to_move" @selected($val('possession_status') === 'ready_to_move')>Ready to Move</option>
                     <option value="under_construction" @selected($val('possession_status') === 'under_construction')>Under Construction</option>
-                </select>
+                </x-select>
             </div>
             <div>
                 <label class="text-sm font-semibold text-slate-700">Facing</label>

@@ -9,10 +9,10 @@
             </div>
             <div>
                 <label class="text-xs font-semibold text-slate-500">Nature</label>
-                <select name="nature" class="mt-1 rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                <x-select name="nature" class="text-sm" wrapper-class="mt-1 w-40" aria-label="Nature">
                     <option value="residential">Residential</option>
                     <option value="commercial">Commercial</option>
-                </select>
+                </x-select>
             </div>
             <button class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-700">Add</button>
         </form>

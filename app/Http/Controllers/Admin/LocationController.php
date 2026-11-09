@@ -36,10 +36,19 @@ class LocationController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'parent_id' => ['nullable', 'exists:locations,id', 'required_if:type,locality'],
             'state' => ['nullable', 'string', 'max:100'],
+            'district' => ['nullable', 'string', 'max:100'],
+            'country' => ['nullable', 'string', 'max:100'],
         ]);
+
+        $parent = $data['type'] === Location::TYPE_LOCALITY ? Location::find($data['parent_id']) : null;
 
         Location::create([
             ...$data,
+            'parent_id' => $parent?->id,
+            // A locality sits in its city's region unless told otherwise.
+            'state' => $data['state'] ?? $parent?->state,
+            'district' => $data['district'] ?? $parent?->district,
+            'country' => $data['country'] ?? $parent?->country,
             'slug' => Str::slug($data['name']).'-'.Str::random(4),
         ]);
 

@@ -71,6 +71,13 @@ class Status extends Model
 
     public const int ENQUIRY_VISIT_SCHEDULED = 27;
 
+    // User account statuses (group: "user"). Inactive = registered by phone but the OTP
+    // has not been verified yet; Active = phone verified. Admin suspension is separate
+    // (users.is_active) and always overrides these.
+    public const int USER_INACTIVE = 28;
+
+    public const int USER_ACTIVE = 29;
+
     /**
      * Statuses considered "live" on the public marketplace.
      *

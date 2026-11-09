@@ -29,11 +29,11 @@
                             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endif
                     @endforeach
-                    <select name="sort" onchange="this.form.submit()" class="rounded-lg border-slate-200 text-sm focus:border-emerald-500 focus:ring-emerald-500">
+                    <x-select name="sort" onchange="this.form.submit()" class="text-sm" wrapper-class="w-48" aria-label="Sort results">
                         @foreach ($sortOptions as $value => $label)
                             <option value="{{ $value }}" @selected(($filters['sort'] ?? 'newest') === $value)>{{ $label }}</option>
                         @endforeach
-                    </select>
+                    </x-select>
                 </form>
             </div>
         </div>

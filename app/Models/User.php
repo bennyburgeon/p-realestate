@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\HasStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -17,7 +18,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasRoles, Notifiable;
+    use HasFactory, HasRoles, HasStatus, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -31,7 +32,25 @@ class User extends Authenticatable
             'phone_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'status_id' => 'integer',
         ];
+    }
+
+    /**
+     * True for an account created at the phone-number step whose OTP has not been
+     * verified yet. Suspended accounts never qualify, so OTP login cannot unsuspend.
+     */
+    public function isAwaitingPhoneVerification(): bool
+    {
+        return $this->status_id === Status::USER_INACTIVE && $this->is_active;
+    }
+
+    /**
+     * @return HasMany<OneTimePassword, $this>
+     */
+    public function oneTimePasswords(): HasMany
+    {
+        return $this->hasMany(OneTimePassword::class);
     }
 
     /**

@@ -12,6 +12,26 @@ class SendOtpRequest extends FormRequest
     }
 
     /**
+     * Accept "98765 43210", "+91 98765-43210" or "098765..." and store the 10-digit form.
+     */
+    protected function prepareForValidation(): void
+    {
+        if (! is_string($this->input('phone'))) {
+            return;
+        }
+
+        $digits = preg_replace('/\D+/', '', $this->input('phone'));
+
+        if (strlen($digits) === 12 && str_starts_with($digits, '91')) {
+            $digits = substr($digits, 2);
+        } elseif (strlen($digits) === 11 && str_starts_with($digits, '0')) {
+            $digits = substr($digits, 1);
+        }
+
+        $this->merge(['phone' => $digits]);
+    }
+
+    /**
      * @return array<string, array<int, string>>
      */
     public function rules(): array

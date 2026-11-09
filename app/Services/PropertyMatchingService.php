@@ -192,16 +192,18 @@ class PropertyMatchingService
             ? $property->location->id
             : $property->location->parent_id;
 
+        $preferredLocalities = $requirement->preferred_locality_ids ?? [];
+
+        // Preferred areas may include neighbouring local bodies of the same district.
+        if (in_array($property->location_id, $preferredLocalities, true)) {
+            return 25;
+        }
+
         if ($propertyCityId !== $requirement->city_id) {
             return 0;
         }
 
-        $preferredLocalities = $requirement->preferred_locality_ids ?? [];
-        if (empty($preferredLocalities)) {
-            return 15;
-        }
-
-        return in_array($property->location_id, $preferredLocalities, true) ? 25 : 12;
+        return empty($preferredLocalities) ? 15 : 12;
     }
 
     private function rangeScore(?string $min, ?string $max, float $value, int $weight): float

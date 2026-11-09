@@ -17,11 +17,11 @@
                         <td class="px-4 py-3">
                             <form method="POST" action="{{ route('admin.users.role', $user) }}">
                                 @csrf
-                                <select name="role" onchange="this.form.submit()" class="rounded-lg border-slate-200 text-xs focus:border-emerald-500 focus:ring-emerald-500">
+                                <x-select name="role" onchange="this.form.submit()" class="text-xs" wrapper-class="w-40" aria-label="Role for {{ $user->name }}">
                                     @foreach ($roles as $role)
                                         <option value="{{ $role->name }}" @selected($user->hasRole($role->name))>{{ $role->name }}</option>
                                     @endforeach
-                                </select>
+                                </x-select>
                             </form>
                         </td>
                         <td class="px-4 py-3">
